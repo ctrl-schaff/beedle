@@ -40,8 +40,12 @@ ID     | SYMBOL | BACKGROUND | COLOR (HEX) |
     - Python Visualization
         * [Integer -> Color Mapping](https://stackoverflow.com/questions/36377638/how-to-map-integers-to-colors-in-matplotlib)
         * [Matplotlib Colormap](https://matplotlib.org/3.3.3/tutorials/colors/colormap-manipulation.html#sphx-glr-tutorials-colors-colormap-manipulation-py)
+        * [Matplotlib ScalarMappable](https://matplotlib.org/3.3.4/api/cm_api.html#matplotlib.cm.ScalarMappable)
+        * [Matplotlib Colormap decode](https://stackoverflow.com/questions/45177154/how-to-decode-color-mapping-in-matplotlibs-colormap/45178154#45178154)
     - Miscellaneous 
         * [String splice](https://stackoverflow.com/questions/9475241/split-string-every-nth-character)
-
-
-
+        * [Unique List | Maintain Order](https://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-whilst-preserving-order)
+        * [NamedTuple defaults](https://stackoverflow.com/questions/11351032/named-tuple-and-default-values-for-optional-keyword-arguments)
+        * [List tuple index](https://stackoverflow.com/questions/30341008/is-it-possible-to-index-nested-lists-using-tuples-in-python)
+    - Moviepy
+        * [Moviepy demo](https://zulko.github.io/blog/2014/11/29/data-animations-with-python-and-moviepy/)
