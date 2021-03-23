@@ -19,8 +19,11 @@ if __name__ == "__main__":
 
     md = RomMap(romfile)
     tg = TileGraph(md, keyfile)
-    pg = PathProcessor((22, 23), tg)
-    (regionSet, regionPaths) = pg.pathfind()
+    pg = PathProcessor(tg)
+
+    initStartTile = (22, 23)
+    (regionSet, regionTilePaths) = pg.pathfind(initStartTile)
 
     vz = VideoProcessor(md.mapData, tg._tileParser.TILE_COLOR)
-    vz.animateSearch(regionSet, regionPaths)
+    vz = VideoProcessor(md.mapData, tg._tileParser.TILE_COLOR, "pathExplore.mp4", 10)
+    vz.animateSearch(regionSet, regionTilePaths)

@@ -31,8 +31,6 @@ class RomMap:
         self.mapData = np.zeros(
             [2 * self.SUB_MAP_SIZE_X, 2 * self.SUB_MAP_SIZE_Y], dtype=np.int
         )
-        self.tileMap = []
-
         if os.path.isfile(rompath) and os.path.exists(rompath):
             self.romdata = os.path.abspath(rompath)
         else:

@@ -1,43 +1,85 @@
 #!/usr/bin/env python3
 
-
 """
 PathProcessor:
-Implements the floodfill and pathfinding algorithms while desired path combinations
+Implements the floodfill and pathfinding algorithms with desired path combinations
 """
 
 import copy
+import operator
 
 import z2p.RomMap as RomMap
-from z2p.Tile import TileGraph
+from z2p.Tile import TileGraph, TileNode, TilePath
+
+import matplotlib.pyplot as plt
+import matplotlib as mpl
 
 
 class PathProcessor:
-    def __init__(self, startTile: tuple, tileGraph: TileGraph):
-        self._startTile = startTile
+    def __init__(self, tileGraph: TileGraph):
         self.tileGraph = tileGraph
-        self.keyTile = tileGraph._tileParser._graphLogicDict.keys()
+        self.keyTile = set()
+        for tile in tileGraph._tileParser._graphLogicDict.keys():
+            if (
+                len(tileGraph[tile].logic.reward) != 1
+                or "|" not in tileGraph[tile].logic.reward
+            ):
+                self.keyTile.add(tile)
+        self.globalInventory = set(["|"])
 
-        self.inventory = set("|")
-        self.pathData = []
-
-    def pathfind(self):
-        regionKeys = []
+    def pathfind(self, initialStartTile: tuple):
         regionPaths = []
 
-        regionStack, linkMap = self._exploreRegion()
-        for key_pos in self.keyTile:
-            if key_pos in regionStack:
-                localPath = self._constructPath(key_pos, linkMap)
-                regionPaths.append(localPath)
-        regionPaths.pop(0)
+        # Initialize the search space
+        (regionStack, linkMap) = self._exploreRegion(initialStartTile)
+        regionKeys = set(self.keyTile) & set(regionStack)
+        localPaths = self._constructPaths(initialStartTile, regionKeys, linkMap)
+        tilePaths = self._formTilePaths(localPaths)
+
+        doneIndex = []
+        allPaths = []
+        allPaths.extend(tilePaths)
+
+        # Iteratively form path combinations
+        # PathProcessor.viewPath(startTilePath, regionKeys)
+        while len(tilePaths) > 0:
+            startTilePath = tilePaths.pop(0)
+            startTile = startTilePath.collection[-1]
+            keySubSet = set.difference(regionKeys, startTilePath.keySet)
+            (_, linkMap) = self._exploreRegion(startTile)
+            localPaths = self._constructPaths(startTile, keySubSet, linkMap)
+            localTilePaths = self._formTilePaths(localPaths)
+
+            for localSubPath in localTilePaths:
+                copyPath = copy.deepcopy(startTilePath)
+                copyPath.concatenate(
+                    localSubPath, self.tileGraph._tileParser._ITEM_VALUE_LOOKUP
+                )
+                tilePaths.append(copyPath)
+                allPaths.append(copyPath)
+
+        for tpath in allPaths:
+            if self.tileGraph[tpath.pathEnd].background == "Palace":
+                regionPaths.append(tpath)
         return (regionStack, regionPaths)
 
-    def _exploreRegion(self):
-        searchStack = [self._startTile]
+    def _formTilePaths(self, regionPaths: list):
+        initialTilePaths = []
+        for pcollection in regionPaths:
+            basePath = TilePath(
+                pcollection,
+                self.tileGraph,
+                self.tileGraph._tileParser._ITEM_VALUE_LOOKUP,
+            )
+            initialTilePaths.append(basePath)
+        rankSortPaths = self._sortPaths(initialTilePaths)
+        return rankSortPaths
+
+    def _exploreRegion(self, startTile: tuple):
+        searchStack = [startTile]
         regionStack = []
         linkMap = dict()
-        linkMap[self._startTile] = None
+        linkMap[startTile] = None
 
         while len(searchStack) > 0:
             searchNode = searchStack.pop(0)
@@ -50,17 +92,34 @@ class PathProcessor:
                     and edgeNode not in linkMap
                 ):
                     tcost = self.tileGraph[edgeNode].logic.traversalCost
-                    if tcost.issubset(self.inventory):
+                    if tcost.issubset(self.globalInventory):
                         searchStack.append(edgeNode)
                         linkMap[edgeNode] = searchNode
         return (regionStack, linkMap)
 
-    def _constructPath(self, keyPos: tuple, linkMap: dict):
-        localPath = []
-        tilePtr = keyPos
-        while tilePtr != self._startTile:
-            localPath.append(tilePtr)
-            tilePtr = linkMap[tilePtr]
-        localPath.append(self._startTile)
-        localPath.reverse()
-        return localPath
+    def _constructPaths(self, startTile: tuple, keySet: set, linkMap: dict):
+        localPaths = []
+        for key in keySet:
+            lPath = []
+            tilePtr = key
+            while tilePtr != startTile:
+                lPath.append(tilePtr)
+                tilePtr = linkMap[tilePtr]
+            lPath.append(startTile)
+            lPath.reverse()
+            localPaths.append(lPath)
+        return localPaths
+
+    def _sortPaths(self, regionPaths: list):
+        regionPaths.sort(key=operator.attrgetter("rank"))
+        return regionPaths
+
+    @staticmethod
+    def viewPath(tPath: TilePath, keySet: set):
+        plt.figure()
+        (keyY, keyX) = zip(*keySet)
+        (pathY, pathX) = zip(*tPath.collection)
+        plt.scatter(keyX, keyY)
+        plt.scatter(pathX, pathY)
+        plt.gca().invert_yaxis()
+        plt.show()

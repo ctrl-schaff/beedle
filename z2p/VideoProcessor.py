@@ -5,31 +5,43 @@ VideoProcessor:
 Generates output video from pathfinding results
 """
 
-import copy
 import sys
 
 import numpy as np
+
 import matplotlib.pyplot as plt
-import matplotlib
+import matplotlib as mpl
 import moviepy.editor as mpy
+from moviepy.video import VideoClip
 from moviepy.video.io.bindings import mplfig_to_npimage
+
+from z2p.Tile import TilePath
 
 
 class VideoProcessor:
     def __init__(
-        self, mapData: np.array, tileColors: tuple, vName: str = "pathExplore.mp4"
+        self,
+        mapData: np.array,
+        tileColors: tuple,
+        vName: str = "pathExplore.mp4",
+        numOutPath: int = 10,
     ):
         # Colormap Parameters
         self._tileColorData = tileColors
         self._mapDataID = mapData
         self._colorRange = len(tileColors)
         self._createColorMapData()
+        self._EXPLORE_TILE = 16
+        self._PATH_TILE = 17
 
         # Video Parameters
-        self._exploreFPS = 45
-        self._pathFPS = 45
-        self._fullFPS = 45
+        self._numOutPath = numOutPath
+        self._videoFPS = 60
+        self._videoBufferSize = 60
+        self._bufferTile = (-1, -1)
         self._videoName = vName
+        self._clipData = []
+        self._timeData = []
 
         # Matplotlib Parameters
         self._DPI = 200
@@ -39,18 +51,16 @@ class VideoProcessor:
         self._videoData = self._vax.imshow(self._mapDataRGB, cmap=self.colormap)
 
     def animateSearch(self, regionSet: list, regionPath: list):
-        exploreVideo = self._createExploreVideo(regionSet)
-        pathVideo = self._createPathVideo(regionPath)
-        fullVideo = mpy.concatenate_videoclips(
-            [exploreVideo, pathVideo], method="compose"
-        )
+        self._createExploreVideo(regionSet)
+        self._createPathVideo(regionPath)
 
+        fullVideo = mpy.concatenate_videoclips(self._clipData, method="compose")
         fullVideo.write_videofile(
             self._videoName,
-            fps=self._fullFPS,
+            fps=self._videoFPS,
             threads=4,
+            ffmpeg_params=["-preset", "ultrafast", "-crf", "17"],
             codec="libx264",
-            ffmpeg_params=["-preset", "veryslow", "-crf", "17"],
         )
         fullVideo.close()
 
@@ -70,48 +80,65 @@ class VideoProcessor:
 
     def _createColorMapData(self):
         normFunc = plt.Normalize(0, self._colorRange)
-        self.colormap = matplotlib.colors.ListedColormap(self._tileColorData)
-        self.cmapper = matplotlib.cm.ScalarMappable(norm=normFunc, cmap=self.colormap)
+        self.colormap = mpl.colors.ListedColormap(self._tileColorData)
+        self.cmapper = mpl.cm.ScalarMappable(norm=normFunc, cmap=self.colormap)
 
         mapDataRGBA = self.cmapper.to_rgba(self._mapDataID, None, True, True)
         self._mapDataRGB = mapDataRGBA[:, :, :-1]
-        self._mapDataVideo = copy.copy(self._mapDataRGB)
+        self._mapDataVideo = np.copy(self._mapDataRGB)
 
     def _createExploreVideo(self, exploreList: list):
-        self._exploreIterator = iter(exploreList)
-        self._numExploreFrames = len(exploreList)
+        self._exploreIterator = iter(
+            exploreList + [self._bufferTile] * self._videoBufferSize
+        )
+        numExploreFrames = len(exploreList) + self._videoBufferSize
 
         exploreVideo = mpy.VideoClip(
             self._make_explore_frame,
-            duration=(self._numExploreFrames / self._exploreFPS),
+            duration=(numExploreFrames / self._videoFPS),
         )
-        return exploreVideo
+        self._background = np.copy(self._mapDataVideo)
+        self._clipData.append(exploreVideo)
 
     def _createPathVideo(self, pathList: list):
-        pathTiles = [tile for path in pathList for tile in path]
-        uniquePathTiles = dict.fromkeys(pathTiles)
-        self._numPathFrames = len(uniquePathTiles)
-        self._pathIterator = iter(uniquePathTiles)
+        allPathTiles = []
+        for tpath in pathList[0 : self._numOutPath]:
+            allPathTiles.extend(tpath.collection)
+            allPathTiles.extend([self._bufferTile] * self._videoBufferSize)
+        self._pathIterator = iter(allPathTiles)
 
-        pathVideo = mpy.VideoClip(
-            self._make_path_frame, duration=(self._numPathFrames / self._pathFPS)
-        )
-        return pathVideo
+        for tpath in pathList[0 : self._numOutPath]:
+            numPathFrames = tpath.rank[1] + self._videoBufferSize
+            pathVideo = mpy.VideoClip(
+                self._make_path_frame, duration=(numPathFrames / self._videoFPS)
+            )
+            self._clipData.append(pathVideo)
 
     def _make_explore_frame(self, t):
+        self._timeData.append(t)
         try:
             pathTile = self._exploreIterator.__next__()
         except StopIteration:
-            return self._mapDataVideo
-        self._mapDataVideo[pathTile] = self.cmapper.to_rgba(16, None, True, True)[:-1]
-        self._videoData.set_data(self._mapDataVideo)
+            return mplfig_to_npimage(self._vfig)
+
+        self._frameupdate(pathTile, self._EXPLORE_TILE)
         return mplfig_to_npimage(self._vfig)
 
     def _make_path_frame(self, t):
+        self._timeData.append(t)
         try:
             pathTile = self._pathIterator.__next__()
         except StopIteration:
-            return self._mapDataVideo
-        self._mapDataVideo[pathTile] = self.cmapper.to_rgba(17, None, True, True)[:-1]
-        self._videoData.set_data(self._mapDataVideo)
+            return mplfig_to_npimage(self._vfig)
+
+        self._frameupdate(pathTile, self._PATH_TILE)
         return mplfig_to_npimage(self._vfig)
+
+    def _frameupdate(self, pathTile: tuple, pathValue: int):
+        if pathTile == self._bufferTile:
+            self._mapDataVideo = np.copy(self._background)
+        else:
+            self._mapDataVideo[pathTile] = self.cmapper.to_rgba(
+                pathValue, None, True, True
+            )[:-1]
+        self._videoData.set_data(self._mapDataVideo)
