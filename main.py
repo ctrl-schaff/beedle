@@ -1,29 +1,50 @@
 #!/usr/bin/env python3
 
-import os
-import sys
+"""
+Driver script for z2p processing
+"""
 
-from z2p import RomMap, TileGraph, PathProcessor, VideoProcessor
-import z2p
+import argparse
+import os
+
+from structure import DATA_DIR
+from structure import CONFIG_DIR
+
+import z2p.RomMap as RomMap
+import z2p.PathProcessor as PathProcessor
+import z2p.VideoProcessor as VideoProcessor
+from z2p.tile.TileGraph import TileGraph
 
 if __name__ == "__main__":
 
-    dataDir = "./data/"
-    dataDir = os.path.abspath(dataDir)
-    if os.path.isdir(dataDir) and os.path.exists(dataDir):
-        romfile = dataDir + "/zelda2.nes"
-        keyfile = dataDir + "/key2.dat"
-    else:
-        exitstr = "Exiting: Unable to locate files\nROM {0:s}\nLOGIC {1:s}"
-        sys.exit(exitstr.format(romfile, keyfile))
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-r", "--romfile", dest="romfile", type=str, required=True)
+    ap.add_argument("-l", "--logicfile", dest="logicfile", type=str, required=True)
+
+    ap.add_argument(
+        "-v",
+        "--videoBase",
+        dest="videoBase",
+        type=str,
+        required=False,
+        default="pathExplore",
+    )
+
+    args = ap.parse_args()
+
+    romfile = os.path.join(DATA_DIR, args.romfile)
+    logicfile = os.path.join(DATA_DIR, args.logicfile)
 
     md = RomMap(romfile)
-    tg = TileGraph(md, keyfile)
+    tg = TileGraph(md, logicfile)
     pg = PathProcessor(tg)
 
     initStartTile = (22, 23)
-    (regionSet, regionTilePaths) = pg.pathfind(initStartTile)
+    pg.pathfind(initStartTile)
 
-    vz = VideoProcessor(md.mapData, tg._tileParser.TILE_COLOR)
-    vz = VideoProcessor(md.mapData, tg._tileParser.TILE_COLOR, "pathExplore.mp4", 10)
-    vz.animateSearch(regionSet, regionTilePaths)
+    vz = VideoProcessor(md.mapData, tg.tileParser.tileData.TILE_COLOR)
+    vz = VideoProcessor(md.mapData, tg.tileParser.tileData.TILE_COLOR, 10)
+
+    for ind, (regionSet, regionTilePaths) in enumerate(zip(pg.regionData, pg.pathData)):
+        videoName = "{0:s}{1:d}.mp4".format(args.videoBase, ind)
+        vz.animateSearch(regionSet, regionTilePaths, videoName)

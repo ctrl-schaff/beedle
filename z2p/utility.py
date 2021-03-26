@@ -8,6 +8,9 @@ import itertools
 import operator
 
 import numpy as np
+import matplotlib.pyplot as plt
+
+import z2p.tile.TilePath as TilePath
 
 
 def getNeighbors(node: tuple):
@@ -25,3 +28,13 @@ def manhattanDistance(node1: tuple, node2: tuple):
 def chunker(iterable, n, fillvalue=None):
     args = [iter(iterable)] * n
     return itertools.zip_longest(*args, fillvalue=fillvalue)
+
+
+def viewPath(tPath: TilePath, keySet: set):
+    plt.figure()
+    (keyY, keyX) = zip(*keySet)
+    (pathY, pathX) = zip(*tPath.collection)
+    plt.scatter(keyX, keyY)
+    plt.scatter(pathX, pathY)
+    plt.gca().invert_yaxis()
+    plt.show()

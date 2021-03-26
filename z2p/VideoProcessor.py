@@ -15,7 +15,7 @@ import moviepy.editor as mpy
 from moviepy.video import VideoClip
 from moviepy.video.io.bindings import mplfig_to_npimage
 
-from z2p.Tile import TilePath
+from z2p.tile.TilePath import TilePath
 
 
 class VideoProcessor:
@@ -23,7 +23,6 @@ class VideoProcessor:
         self,
         mapData: np.array,
         tileColors: tuple,
-        vName: str = "pathExplore.mp4",
         numOutPath: int = 10,
     ):
         # Colormap Parameters
@@ -39,7 +38,6 @@ class VideoProcessor:
         self._videoFPS = 60
         self._videoBufferSize = 60
         self._bufferTile = (-1, -1)
-        self._videoName = vName
         self._clipData = []
         self._timeData = []
 
@@ -50,13 +48,13 @@ class VideoProcessor:
         self._vax.set_axis_off()
         self._videoData = self._vax.imshow(self._mapDataRGB, cmap=self.colormap)
 
-    def animateSearch(self, regionSet: list, regionPath: list):
+    def animateSearch(self, regionSet: list, regionPath: list, videoName: str):
         self._createExploreVideo(regionSet)
         self._createPathVideo(regionPath)
 
         fullVideo = mpy.concatenate_videoclips(self._clipData, method="compose")
         fullVideo.write_videofile(
-            self._videoName,
+            videoName,
             fps=self._videoFPS,
             threads=4,
             ffmpeg_params=["-preset", "ultrafast", "-crf", "17"],
