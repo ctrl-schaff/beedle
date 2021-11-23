@@ -6,7 +6,6 @@ Test Methods for exploring the graph generation from map data
 
 
 import itertools
-import pdb
 import pytest
 
 import z2p.graph
@@ -50,8 +49,12 @@ def test_graph_indexing():
 
     tiledata = z2p.map_tile.MapTileData(tilespec)
     logicdata = z2p.map_logic.MapLogicData(logicspec, tiledata)
+    itemdata = z2p.map_item.MapItemData(itemspec)
 
     graph_obj = z2p.graph.TileGraph(map_obj, logicdata, tiledata)
+    graph_start = (23, 22)
+    graph_end = (69, 43)
+    graph_obj.form_topological_graph(graph_start, graph_end, logicdata, itemdata)
 
     map_dim_product = (range(map_obj.MAP_SIZE_X), range(map_obj.MAP_SIZE_Y))
     for (row_index, col_index) in itertools.product(

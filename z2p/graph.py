@@ -22,7 +22,6 @@ class TileGraph:
     def __init__(self, map_data, logic_table, tile_table):
         self._tile_graph = dict()
         self._form_tile_graph(map_data, logic_table, tile_table)
-        self._form_topological_graph()
 
     def _form_tile_graph(self, map_data, logic_table, tile_table) -> None:
         """
@@ -40,14 +39,56 @@ class TileGraph:
             )
             self._tile_graph[tile_coord] = tile_node
 
-    def _form_topological_graph(self, graph_start: tuple, graph_end: tuple):
-        inventory = set()
-        full_map_coordinates = set()
-        current_goal = None
-        while (graph_end not in full_map_coordinates):
-            
+    def form_topological_graph(self,
+                               graph_start: tuple,
+                               graph_end: tuple,
+                               map_logic,
+                               map_item):
+        """
+        Iteratively explores the map and continually updates the topological
+        graph formed from the logic tiles.
+        Process:
+            > Explore the entire possible region with a given inventory
+            > Using the maplogic object, extract the import "key" tiles
+              from the entire possible region
+            > Iterate over those found keys and see if the criteria is met
+              to obtain the reward
+            > If the reward cost is met, update the inventory and add the
+              tile to the completed / visited keys set to avoid further
+              duplicate processing
+            > If the traversal cost is met, update the connections associated
+              with that "key" tile
+        End Criteria:
+            > Add the graph_end tile point to the completed_keys set
+        """
+        path_proc = z2p.pathprocessor.PathProcessor(self, map_logic, map_item)
+        topo_graph = dict()
+        completed_keys = set()
 
-        
+        while graph_end not in completed_keys:
+            interim_inventory = set()
+            region_stack, _ = path_proc.explore_region(graph_start)
+
+            region_keys = set(path_proc.key_tile) & set(region_stack)
+            for rkey in region_keys.difference(completed_keys):
+                rcost = set([*self._tile_graph[rkey].reward_cost])
+                tcost = set([*self._tile_graph[rkey].traversal_cost])
+
+                item_set = rcost | tcost
+                # topo_graph[rkey] = item_set
+                topo_graph[rkey] = map_logic.reward_lookup(item_set)
+
+                if rcost.issubset(path_proc.global_inventory):
+                    for reward_item in self._tile_graph[rkey].reward:
+                        interim_inventory.add(reward_item)
+
+                if (rcost.issubset(path_proc.global_inventory) and
+                        tcost.issubset(path_proc.global_inventory)):
+                    completed_keys.add(rkey)
+                
+            path_proc.global_inventory.update(interim_inventory)
+        breakpoint()
+        return topo_graph
 
     def __getitem__(self, index: tuple):
         graph_entry = z2p.node.TileNode()
