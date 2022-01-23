@@ -68,7 +68,10 @@ def check_file_path(filepath: str):
     """
     Basic function intended as decorator for checking file paths
     """
-    if filepath is not None and os.path.exists(filepath) and os.path.isfile(filepath):
+    file_exist = filepath is not None
+    path_exist = os.path.exists(filepath)
+    file_check = os.path.isfile(filepath)
+    if file_exist and path_exist and file_check:
         filepath = os.path.abspath(filepath)
     else:
         print("Unable to find file {0:s}".format(filepath))
@@ -80,7 +83,11 @@ def check_dir_path(filepath: str):
     """
     Basic function intended as decorator for checking directory paths
     """
-    if filepath is not None and os.path.exists(filepath) and os.path.isdir(filepath):
+    file_exist = filepath is not None
+    path_exist = os.path.exists(filepath)
+    dir_check = os.path.isdir(filepath)
+
+    if file_exist and path_exist and dir_check:
         filepath = os.path.abspath(filepath)
     else:
         print("Unable to find directory {0:s}".format(filepath))

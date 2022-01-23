@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-ItemData
+Class for loading the map item data
 """
 
 import z2p.utility
@@ -17,10 +17,9 @@ class MapItemData:
         > <value>: int/float (numeric value)
     This data is associated with specific tiles from the maplogic file so that
     the graph can look up tile costs when traversing the map
-    While it is not required, items of higher importance are weighted higher than
-    less important / optional items for scoring purposes
+    While it is not required, items of higher importance are weighted higher
+    than less important / optional items for scoring purposes
     """
-
     def __init__(self, item_file: str):
         item_data = z2p.utility.load_json_data(item_file)
         self.item_lookup = z2p.utility.unpack_json_data(item_data)
@@ -34,11 +33,7 @@ class MapItemData:
         except KeyError as key_err:
             print(key_err)
             print(
-                "Error indexing the item lookup table with key {0:d}".format(item_key)
+                f"Error indexing the item lookup table with key {item_key}"
             )
             print("Valid keys [{0:s}]".format(*self.item_lookup.keys()))
             return None
-
-    # def __iter__(self):
-    #     for entry in self.tile_lookup:
-    #         yield entry

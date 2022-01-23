@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 
 """
-File import class for handling the map tile specifications 
+File import class for handling the map tile specifications
 """
-
 
 import z2p.utility
 
@@ -12,7 +11,8 @@ class MapTileData:
     """
     MapTileData
     Wrapper class for importing the map tile specifications
-    Handler for parsing and importing the map specific tile data for key locations and items
+    Handler for parsing and importing the map specific tile
+    data for key locations and items
     """
 
     def __init__(self, tile_file: str):
@@ -26,7 +26,8 @@ class MapTileData:
         """
         try:
             tile_property_collection = [
-                tile_entry[tile_property] for tile_entry in self.tile_lookup.values()
+                tile_entry[tile_property]
+                for tile_entry in self.tile_lookup.values()
             ]
         except Exception as excp:
             raise excp
@@ -38,12 +39,11 @@ class MapTileData:
             tile_entry = self.tile_lookup[str(index)]
             return tile_entry
         except KeyError as key_err:
-            print(
-                "Error indexing the map tile lookup table with index {0:d}".format(
-                    index
-                )
+            msg = (
+                f'Error indexing  map tile lookup table with index {index}\n'
+                f'Expected bounds [0, {len(self.tile_lookup)}]'
             )
-            print("Expected bounds [{0:d}, {1:d}]".format(0, len(self.tile_lookup)))
+            print(msg)
             raise key_err
 
     def __iter__(self):

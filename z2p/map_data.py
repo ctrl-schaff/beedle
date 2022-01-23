@@ -14,12 +14,13 @@ import z2p.utility
 
 
 class RomMap:
-    def __init__(self, rompath: str):
 
-        self.SUB_MAP_SIZE_X = 75
-        self.SUB_MAP_SIZE_Y = 65
-        self.MAP_SIZE_X = 2 * self.SUB_MAP_SIZE_X
-        self.MAP_SIZE_Y = 2 * self.SUB_MAP_SIZE_Y
+    SUB_MAP_SIZE_X = 75
+    SUB_MAP_SIZE_Y = 65
+    MAP_SIZE_X = 2 * SUB_MAP_SIZE_X
+    MAP_SIZE_Y = 2 * SUB_MAP_SIZE_Y
+
+    def __init__(self, rompath: str):
 
         self.map_boundary = {
             "WEST_HYRULE": (int("506C", 16), int("538C", 16)),
@@ -35,12 +36,13 @@ class RomMap:
         if os.path.isfile(rompath) and os.path.exists(rompath):
             self.romdata = os.path.abspath(rompath)
         else:
-            sys.exit("Invalid rom file path {0:s}".format(os.path.abspath(rompath)))
+            sys.exit(f"Invalid rom file path {os.path.abspath(rompath)}")
 
         self._extract_map_data()
         self._form_map_data()
 
-        # Transpose the map to ensure you can index with (X, Y) rather than (Y, X)
+        # Transpose the map to ensure you can index with
+        # (X, Y) rather than (Y, X)
         self.map_data = self.map_data.T
         (self.MAP_SIZE_X, self.MAP_SIZE_Y) = self.map_data.shape
 
@@ -52,14 +54,17 @@ class RomMap:
                 map_byte_chunk = romfile.read(num_map_bytes).hex()
 
                 sub_map = []
-                for byte in z2p.utility.chunker(map_byte_chunk, 2, fillvalue="0"):
+                for byte in z2p.utility.chunker(
+                        map_byte_chunk, 2, fillvalue="0"
+                ):
                     sub_map += (int(byte[0], 16) + 1) * [int(byte[1], 16)]
 
                 self._form_water_barrier(sub_map)
 
                 self._sub_map_data.append(
                     np.resize(
-                        np.array(sub_map), (self.SUB_MAP_SIZE_X, self.SUB_MAP_SIZE_Y)
+                        np.array(sub_map),
+                        (self.SUB_MAP_SIZE_X, self.SUB_MAP_SIZE_Y)
                     )
                 )
 
@@ -67,7 +72,10 @@ class RomMap:
         """
         Vertical water barrier to separate sub maps
         """
-        for index in range(self.SUB_MAP_SIZE_Y, len(sub_map), self.SUB_MAP_SIZE_Y):
+        for index in range(self.SUB_MAP_SIZE_Y,
+                           len(sub_map),
+                           self.SUB_MAP_SIZE_Y
+                           ):
             sub_map.insert(index - 1, 12)
 
     def _form_map_data(self):
@@ -90,6 +98,6 @@ class RomMap:
             map_id = self.map_data[map_coord]
         except IndexError as ind_err:
             print(ind_err)
-            print("Error indexing the map with coordinate {0:d}".format(*map_coord))
+            print(f"Error indexing the map with coordinate {map_coord}")
             map_id = -1
         return map_id

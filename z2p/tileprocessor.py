@@ -2,5 +2,6 @@
 
 """
 Tile Roles
-Processor is the main manager for handling tile data and passing off to the pathprocessor
+Processor is the main manager for handling tile data and
+passing off to the pathprocessor
 """

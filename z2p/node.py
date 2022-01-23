@@ -19,38 +19,42 @@ class TileNode:
     > identifier <int>
         >  ID used as value to represent the tile in map data structure
     > location <tuple>
-        > Coordinates to store the 2D (X, Y) pair representing the map location entrance
+        > Coordinates storing the (X, Y) pair representing the map
+        location entrance
     > background <str>
         > ID used to give basic description of what the map tile represents
         (ie. water, mountain, grassland, etc...)
     > symbol <str>
-        > ID character to represent the tile in ascii format within a map data structure
+        > ID character representing the tile in ascii format for the
+        map data structure
     > color <str>
-        > Value to represent the tile color when plotted. Typically stored in a hexadecimal format
+        > Value to represent the tile color when plotted
+        > Typically stored in a hexadecimal format
     > description <str>
-        > Short textual desccription to provide any map related details about the tile
+        > Short textual desccription to provide any map related details
+        about the tile
         (ie. Cave 4, Palace <Name>, Town of <Name>, etc ...)
     > traversal_cost <tuple>
-        > Collection of string values representing costs required to access the tile for connected
-        nodes.
-        No traversal cost requirement is represented by "|".
-        Multiple costs may be required in which all of them must be present in inventory before
-        acquring access
+        > Collection of string values representing costs required to access
+          the tile for connected nodes.
+    No traversal cost requirement is represented by "|".
+    Multiple costs may be required in which all of them must be present
+    in inventory before acquring access
     > reward_cost <tuple>
-        > Collection of string values representing costs required to attain the reward contained on
-        the tile
+        > Collection of string values representing costs required to attain
+        the reward contained on the tile
         No reward cost requirement is represented by "|".
-        Multiple costs may be required in which all of them must be present in inventory before
-        acquring access to the reward
+        Multiple costs may be required in which all of them must be present
+        in inventory before acquring access to the reward
     > reward <tuple>
-        > Collection of string values representing the reward(s) available on the designated tile
+        > Collection of string values representing the reward(s) available on
+        the designated tile
         No reward is represented by "|".
         Multiple rewards may be available on the tile
     > edges <tuple>
-        > Collection of nodes that connect the current TileNode to other TileNodes on the may for
-        traversal
+        > Collection of nodes that connect the current TileNode to
+        other TileNodes on the may for traversal
     """
-
     identifier: int = -1
     location: tuple = ()
     background: str = ""
@@ -65,7 +69,10 @@ class TileNode:
     def __repr__(self) -> str:
         edge_str = "{" + " ".join(map(str, self.edges)) + "}"
         fstr = "\nTILE:[{0:d},{1:d}]\nTYPE:{2:s}\nDESC:{3:s}\nEDGE:{4:s}"
-        return fstr.format(*self.location, self.background, self.description, edge_str)
+        return fstr.format(*self.location,
+                           self.background,
+                           self.description,
+                           edge_str)
 
 
 def create_node(
@@ -75,7 +82,7 @@ def create_node(
     Using the map logic configuration file, we can take the static position
     data stored in map and create a node in the graph
     """
-    logic_entry = logic_table[node_location, node_id]
+    logic_entry = logic_table[node_location]
     node_edges = get_node_edges(node_location, coord_map, logic_entry)
 
     node_obj = TileNode(
@@ -102,7 +109,8 @@ def get_node_edges(location: tuple, coord_map, logic_entry) -> tuple:
     edges = [
         edge
         for edge in adj_edges
-        if (edge[0] >= 0 and edge[0] < mapx) and (edge[1] >= 0 and edge[1] < mapy)
+        if ((edge[0] >= 0 and edge[0] < mapx) and
+            (edge[1] >= 0 and edge[1] < mapy))
     ]
 
     if logic_entry.entrance != logic_entry.exit:

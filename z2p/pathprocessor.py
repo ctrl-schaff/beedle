@@ -2,21 +2,9 @@
 
 """
 PathProcessor:
-Implements the floodfill and pathfinding algorithms with desired path combinations
-
-
-Notes for documentation purposes
-    Pathfinding Process
-    1) Define a region 
-        > We are defining a path (TilePath class object) as a collection of TileNodes starting
-        > with predefined start TileNode and an attempted end TileNode
-    self.region_data = []
-    self.path_data = []
-    for pregion in range(2):
-        (region_keys, tile_paths, start_tile) = self._initialize_search_space(start_tile)
-        self._searchRegionSpace(tile_paths, region_keys)
+Implements the floodfill and pathfinding algorithms with desired path
+combinations
 """
-
 
 import copy
 import operator
@@ -25,6 +13,9 @@ import z2p.tilepath
 
 
 class PathProcessor:
+    """
+    Class for handling the main pathfind algorithm
+    """
     def __init__(self, tile_graph, map_logic, map_item):
         self.global_inventory = set(["|"])
         self.link_maps = dict()
@@ -36,25 +27,33 @@ class PathProcessor:
         self.key_tile = map_logic.logic_tile
         self.map_item = map_item
 
-    def pathfind(self, start_tile: tuple, end_tile: tuple):
+    def pathfind(self, start_tile: tuple):
         """
-        Pathfinding main method. Execute the intended purposes of this entire module
+        Pathfinding main method. Execute the intended purposes of this entire
+        module
+        Pathfinding Process
+        1) Define a region
+            > We are defining a path (TilePath class object) as a collection
+            of TileNodes starting
+            > with predefined start TileNode and an attempted end TileNode
         """
         continue_path_processing = True
         while continue_path_processing:
-            (region_keys, tile_paths, start_tile) = self._initialize_search_space(
-                start_tile
-            )
+            (region_keys,
+             tile_paths,
+             start_tile) = self._initialize_search_space(start_tile)
             self.search_region_space(tile_paths, region_keys)
 
     def _initialize_search_space(self, initial_start_tile: tuple):
         """
-        1) Performs a flood-fill of the region given the initialize starting tile
-        and returns a region stack and link map for the corresponding
-        2) Does a set intersection between the known key tiles from the logic and the region
-        tiles to determine what region keys exists in the explorable region
-        3) Using the A* algorithm and the calculated link maps from the flood-fill, we can calculate
-        a path to all local region keys from the initial_start_tile
+        1) Performs a flood-fill of the region given the initialize starting
+        tile and returns a region stack and link map for the corresponding
+        2) Does a set intersection between the known key tiles from the logic
+        and the region tiles to determine what region keys exists in the
+        explorable region
+        3) Using the A* algorithm and the calculated link maps from the
+        flood-fill, we can calculate a path to all local region keys from
+        the initial_start_tile
         """
 
         region_stack = self.explore_region(initial_start_tile)
@@ -79,8 +78,8 @@ class PathProcessor:
         """
         Expands on the initial collection of paths to explore all potential
         combinations possible
-        
-        Takes the subset of already 
+
+        Takes the subset of already
         """
         allpaths = []
         region_paths = []
@@ -106,6 +105,10 @@ class PathProcessor:
         self.global_inventory.update(region_paths[0].inventory)
 
     def form_tile_paths(self, region_paths: list):
+        """
+        Wrapper around the TilePath class given a list of accumulated
+        region paths
+        """
         tile_paths = []
         for pcollection in region_paths:
             base_path = z2p.tilepath.TilePath(pcollection, self.map_item)
@@ -121,11 +124,13 @@ class PathProcessor:
             > search_stack
                 Collection of tiles accumulated while traversing the graph.
                 Nodes are appended to the end of this stack if the current
-                search_node popped from the top are traversable (the global inventory
-                passes the traversal cost)
-                These nodes are added by examining the edges for each node in the graph
+                search_node popped from the top are traversable (the global
+                inventory passes the traversal cost)
+                These nodes are added by examining the edges for each node
+                in the graph
         """
         search_stack = [start_coord]
+        search_block = []
         local_stack = list()
 
         link_map = dict()
@@ -138,14 +143,20 @@ class PathProcessor:
 
             tile_node = self.tile_graph[search_coord]
             for edge_coord in tile_node.edges:
-                if edge_coord not in local_stack and edge_coord not in search_stack:
+                if (edge_coord not in local_stack and
+                        edge_coord not in search_stack):
                     tcost = set(self.tile_graph[edge_coord].traversal_cost)
                     if tcost.issubset(self.global_inventory):
                         search_stack.append(edge_coord)
                         link_map[self.tile_graph[edge_coord]] = search_coord
-        return local_stack
+                    elif 'X' not in tcost:
+                        search_block.append(edge_coord)
+        return (local_stack, search_block)
 
     def construct_paths(self, start_node, key_set: set):
+        """
+        Main path formation algorithm associated with A*
+        """
         localpaths = []
         start_coord = start_node.location
         link_map = self.link_maps[start_coord]
@@ -162,5 +173,9 @@ class PathProcessor:
 
     @staticmethod
     def sort_paths(region_paths: list):
+        """
+        Sort a collection of paths based off the
+        the calculated rank attribute
+        """
         region_paths.sort(key=operator.attrgetter("rank"), reverse=True)
         return region_paths

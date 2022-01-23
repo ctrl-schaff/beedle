@@ -11,8 +11,8 @@ Output result from path processor
 
 class TilePath:
     """
-    Class sequence for representing a collection of tiles derived from one location
-    on the map to another
+    Class sequence for representing a collection of tiles derived from
+    one location on the map to another
     """
 
     def __init__(self, pathData: list, itemdata):
