@@ -12,6 +12,7 @@ Test methods for the map tile logic
 import pytest
 
 import z2p.structure
+import z2p.map_data
 import z2p.map_logic
 import z2p.map_tile
 
@@ -21,8 +22,11 @@ def test_tilelogic_import():
     Test initial tile data import and compare against all values from
     the known truth values
     """
+
+    romfile = z2p.structure.config_file_str("zelda2.nes")
+    map_obj = z2p.map_data.RomMap(romfile)
     logicspec = z2p.structure.config_file_str("zelda2logic.conf")
     tilespec = z2p.structure.config_file_str("zelda2tiles.conf")
 
     tile_data = z2p.map_tile.MapTileData(tilespec)
-    maplogic_collection = z2p.map_logic.MapLogicData(logicspec, tile_data)
+    maplogic_collection = z2p.map_logic.MapLogicData(logicspec, tile_data, map_obj)

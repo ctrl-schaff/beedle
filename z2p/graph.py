@@ -42,6 +42,37 @@ class TileGraph:
             )
             self._tile_graph[tile_coord] = tile_node
 
+    def process_graph(self,
+                      graph_start: tuple,
+                      graph_end: tuple,
+                      map_logic,
+                      map_item):
+        (topo_graph, stages, bottlenecks) = self.form_topological_graph(
+            graph_start, graph_end, map_logic, map_item
+        )
+        full_node = [graph_start]
+        for coord in bottlenecks.keys():
+            full_node.append(coord)
+        # full_node.append(graph_end)
+
+        pathproc = z2p.pathprocessor.PathProcessor(self, map_logic, map_item)
+        count = 0
+        trees = []
+        for node in full_node:
+            try:
+                item = bottlenecks[node]
+                pathproc.global_inventory.update(item)
+            except KeyError:
+                pass
+
+            (region_keys, tile_paths) = pathproc.initialize_search_space(node)
+            subtree = pathproc.search_region_space(node,
+                                                   tile_paths,
+                                                   region_keys)
+            trees.extend(subtree)
+            print(f'Iteration {count} | {node}')
+            count += 1
+
     def form_topological_graph(self,
                                graph_start: tuple,
                                graph_end: tuple,
@@ -72,7 +103,7 @@ class TileGraph:
         stage_count = 0
         while graph_end not in completed_keys:
             interim_inventory = set()
-            region_stack, _ = path_proc.explore_region(graph_start)
+            region_stack = path_proc.explore_region(graph_start)
 
             region_keys = set(path_proc.key_tile) & set(region_stack)
             stage_key = f'Stage {stage_count}'
@@ -109,7 +140,7 @@ class TileGraph:
                         connection_set.add(coord)
                 connection_set.add(bn1[0])
                 topo_graph[bn2[0]] = tuple(connection_set)
-        return (topo_graph, stages)
+        return (topo_graph, stages, bottlenecks)
 
     def process_stages(self, map_logic, stages: dict) -> dict:
         """
@@ -120,13 +151,13 @@ class TileGraph:
         stage_cmp = []
         for stage_lvl, coord_collection in stages.items():
             stage_cmp.append(coord_collection)
-            print(f'{stage_lvl}')
-            for coord in coord_collection:
-                msg = (f'{coord} | '
-                       f'{self._tile_graph[coord].traversal_cost} | '
-                       f'{self._tile_graph[coord].reward_cost} | '
-                       f'{self._tile_graph[coord].reward}')
-                print(msg)
+            # print(f'{stage_lvl}')
+            # for coord in coord_collection:
+            #     msg = (f'{coord} | '
+            #            f'{self._tile_graph[coord].traversal_cost} | '
+            #            f'{self._tile_graph[coord].reward_cost} | '
+            #            f'{self._tile_graph[coord].reward}')
+            #     print(msg)
 
             if len(stage_cmp) == 2:
                 prev_stage_rewards = set()

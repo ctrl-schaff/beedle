@@ -23,10 +23,8 @@ class TilePath:
 
         self.inventory = set(["|"])
         self.key_data = set([self.path_start, self.path_end])
-        self.rank = tuple([0, 0])
 
         self.__update_inventory()
-        self.__calculate_rank()
 
     def __update_inventory(self):
         for key_tile in self.key_data:
@@ -34,12 +32,6 @@ class TilePath:
             if reward_cost.issubset(self.inventory):
                 for rewarditem in key_tile.reward:
                     self.inventory.add(rewarditem)
-
-    def __calculate_rank(self):
-        score = 0
-        for item in self.inventory:
-            score += self.itemdata[item]
-        self.rank = tuple([score, len(self.collection)])
 
     def __iadd__(self, other_path):
         if self.path_end == other_path.path_start:
@@ -49,10 +41,10 @@ class TilePath:
 
             self.inventory.update(other_path.inventory)
             self.key_data.update(other_path.key_data)
-            self.__calculate_rank()
         return self
 
     def __repr__(self) -> str:
-        col_str = "{" + " ".join(map(str, self.collection)) + "}"
+        path_view = [self.collection[0], self.collection[-1]]
+        col_str = "{" + " ".join(map(str, path_view)) + "}"
         fstr = "\nSCORE:{0:d}\nLENGTH:{1:d}\nCOLLECTION:{2:s}"
-        return fstr.format(self.rank[0], self.rank[1], col_str)
+        return fstr.format(col_str)

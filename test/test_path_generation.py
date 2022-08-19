@@ -17,6 +17,7 @@ import z2p.structure
 import z2p.videoprocessor
 
 
+@pytest.mark.skip
 def test_path_init():
     """
     Perform region finding and produce all potential paths up to first palace

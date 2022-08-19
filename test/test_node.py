@@ -29,7 +29,7 @@ def test_node_generation():
     map_obj = z2p.map_data.RomMap(romfile)
 
     tiledata = z2p.map_tile.MapTileData(tilespec)
-    logicdata = z2p.map_logic.MapLogicData(logicspec, tiledata)
+    logicdata = z2p.map_logic.MapLogicData(logicspec, tiledata, map_obj)
 
     tile_graph = dict()
     map_dim_x = range(map_obj.MAP_SIZE_X)

@@ -6,8 +6,7 @@ Implements the floodfill and pathfinding algorithms with desired path
 combinations
 """
 
-import copy
-import operator
+import treelib
 
 import z2p.tilepath
 
@@ -27,24 +26,7 @@ class PathProcessor:
         self.key_tile = map_logic.logic_tile
         self.map_item = map_item
 
-    def pathfind(self, start_tile: tuple):
-        """
-        Pathfinding main method. Execute the intended purposes of this entire
-        module
-        Pathfinding Process
-        1) Define a region
-            > We are defining a path (TilePath class object) as a collection
-            of TileNodes starting
-            > with predefined start TileNode and an attempted end TileNode
-        """
-        continue_path_processing = True
-        while continue_path_processing:
-            (region_keys,
-             tile_paths,
-             start_tile) = self._initialize_search_space(start_tile)
-            self.search_region_space(tile_paths, region_keys)
-
-    def _initialize_search_space(self, initial_start_tile: tuple):
+    def initialize_search_space(self, initial_start_tile: tuple):
         """
         1) Performs a flood-fill of the region given the initialize starting
         tile and returns a region stack and link map for the corresponding
@@ -65,44 +47,40 @@ class PathProcessor:
         localpaths = self.construct_paths(initial_start_node, region_keys)
         tile_paths = self.form_tile_paths(localpaths)
 
-        new_start_tile = None
         for key_tile in region_keys:
             self.explore_region(key_tile)
 
-            if self.tile_graph[key_tile].background == "Palace":
-                new_start_tile = key_tile
+        return (region_keys, tile_paths)
 
-        return (region_keys, tile_paths, new_start_tile)
-
-    def search_region_space(self, tile_paths: list, region_keys: set):
+    def search_region_space(self,
+                            start_node: tuple,
+                            tile_paths: list,
+                            region_keys: set
+                            ):
         """
         Expands on the initial collection of paths to explore all potential
         combinations possible
 
         Takes the subset of already
         """
-        allpaths = []
-        region_paths = []
-        while len(tile_paths) > 0:
-            start_tile_path = tile_paths.pop(0)
-            start_tile = start_tile_path.collection[-1]
-            key_subset = set.difference(region_keys, start_tile_path.key_data)
 
-            localpaths = self.construct_paths(start_tile, key_subset)
+        subtrees = []
+        for node in region_keys:
+            path_start = self.tile_graph[node]
+            localpaths = self.construct_paths(path_start, region_keys)
             local_tile_paths = self.form_tile_paths(localpaths)
-
+            pathtree = treelib.Tree()
+            pathtree.create_node(identifier=path_start)
             for local_subpath in local_tile_paths:
-                copy_path = copy.deepcopy(start_tile_path)
-                copy_path += local_subpath
-                tile_paths.append(copy_path)
-                allpaths.append(copy_path)
-
-        for tpath in allpaths:
-            if self.tile_graph[tpath.pathEnd].background == "Palace":
-                region_paths.append(tpath)
-
-        self.path_data.append(PathProcessor.sort_paths(region_paths))
-        self.global_inventory.update(region_paths[0].inventory)
+                tag_str = (f'{local_subpath.path_start.description} -> '
+                           f'{local_subpath.path_end.description}')
+                pathtree.create_node(tag=tag_str,
+                                     identifier=local_subpath.path_end,
+                                     parent=local_subpath.path_start,
+                                     data=local_subpath)
+                tile_paths.append(local_subpath)
+            subtrees.append(pathtree)
+        return subtrees
 
     def form_tile_paths(self, region_paths: list):
         """
@@ -130,7 +108,6 @@ class PathProcessor:
                 in the graph
         """
         search_stack = [start_coord]
-        search_block = []
         local_stack = list()
 
         link_map = dict()
@@ -149,9 +126,8 @@ class PathProcessor:
                     if tcost.issubset(self.global_inventory):
                         search_stack.append(edge_coord)
                         link_map[self.tile_graph[edge_coord]] = search_coord
-                    elif 'X' not in tcost:
-                        search_block.append(edge_coord)
-        return (local_stack, search_block)
+        return local_stack
+
 
     def construct_paths(self, start_node, key_set: set):
         """
@@ -168,14 +144,6 @@ class PathProcessor:
                 tile_ptr = link_map[self.tile_graph[tile_ptr]]
             lpath.append(start_node)
             lpath.reverse()
-            localpaths.append(lpath)
+            if lpath[0] != lpath[-1]:
+                localpaths.append(lpath)
         return localpaths
-
-    @staticmethod
-    def sort_paths(region_paths: list):
-        """
-        Sort a collection of paths based off the
-        the calculated rank attribute
-        """
-        region_paths.sort(key=operator.attrgetter("rank"), reverse=True)
-        return region_paths
