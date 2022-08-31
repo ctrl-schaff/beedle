@@ -116,3 +116,21 @@ def get_node_edges(location: tuple, coord_map, logic_entry) -> tuple:
     if logic_entry.entrance != logic_entry.exit:
         edges.append(logic_entry.exit)
     return tuple(edges)
+
+def get_neighbors(node: tuple) -> list:
+    """
+    Calculates all neighbors in cardinal directions on a
+    coordinate plane (left, right, up, down)
+    (X, Y) - Coordinate Pair
+
+    (X, Y) + (1, 0) -> (X+1, Y)
+    (X, Y) + (0, 1) -> (X, Y+1)
+    (X, Y) + (-1, 0) -> (X-1, Y)
+    (X, Y) + (0, -1) -> (X, Y-1)
+
+    Output: ((X+1, Y), (X, Y+1), (X-1, Y), (X, Y-1))
+    """
+    return [
+        tuple(map(operator.add, node, move))
+        for move in ((1, 0), (-1, 0), (0, 1), (0, -1))
+    ]

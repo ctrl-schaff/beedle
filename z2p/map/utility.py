@@ -7,61 +7,13 @@ Miscellaneous utilities
 import collections
 import json
 import itertools
-import operator
 import os
 
-import numpy as np
 import matplotlib.pyplot as plt
 
 import z2p.tilepath
 
 TilePath = z2p.tilepath.TilePath
-
-
-def get_neighbors(node: tuple) -> list:
-    """
-    Calculates all neighbors in cardinal directions on a
-    coordinate plane (left, right, up, down)
-    (X, Y) - Coordinate Pair
-
-    (X, Y) + (1, 0) -> (X+1, Y)
-    (X, Y) + (0, 1) -> (X, Y+1)
-    (X, Y) + (-1, 0) -> (X-1, Y)
-    (X, Y) + (0, -1) -> (X, Y-1)
-
-    Output: ((X+1, Y), (X, Y+1), (X-1, Y), (X, Y-1))
-    """
-    return [
-        tuple(map(operator.add, node, move))
-        for move in ((1, 0), (-1, 0), (0, 1), (0, -1))
-    ]
-
-
-def manhattan_distance(node1: tuple, node2: tuple) -> tuple:
-    """
-    Calculates the manhattan distance
-    (X1, Y1) - Coordinate Pair 1
-    (X2, Y2) - Coordinate Pair 2
-    manhattan_distance = |(X1 - X2)| + |(Y1 - Y2)|
-    """
-    return np.abs(node1[0] - node2[0]) + np.abs(node1[1] - node2[1])
-
-
-def chunker(iterable, chunk_size: int, fillvalue=None):
-    """ Collect data into fixed-length chunks or blocks """
-    args = [iter(iterable)] * chunk_size
-    return itertools.zip_longest(*args, fillvalue=fillvalue)
-
-
-def view_tile_path(tpath: TilePath, keyset: set):
-    """ Basic method for visualizing the tile path in matplotlib """
-    plt.figure()
-    (ykey, xkey) = zip(*keyset)
-    (ypath, xpath) = zip(*tpath.collection)
-    plt.scatter(xkey, ykey)
-    plt.scatter(xpath, ypath)
-    plt.gca().invert_yaxis()
-    plt.show()
 
 
 def check_file_path(filepath: str):
