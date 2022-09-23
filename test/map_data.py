@@ -101,3 +101,5 @@ class RomMap:
             print(f"Error indexing the map with coordinate {map_coord}")
             map_id = -1
         return map_id
+
+

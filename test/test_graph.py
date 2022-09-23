@@ -4,9 +4,6 @@
 Test Methods for exploring the graph generation from map data
 """
 
-import functools
-import time
-import pytest
 
 import z2p.graph
 import z2p.map_item
@@ -16,24 +13,17 @@ import z2p.map_tile
 import z2p.pathprocessor
 import z2p.structure
 
-
-def measure(func):
-    @functools.wraps(func)
-    def _time_it(*args, **kwargs):
-        start = int(round(time.time() * 1000))
-        try:
-            return func(*args, **kwargs)
-        finally:
-            end_ = int(round(time.time() * 1000)) - start
-            print(f'Test | {func.__name__}')
-            print(f'Total execution time: {end_ if end_ > 0 else 0} ms')
+from z2p import TileGraph
 
 
-def test_process_graph():
-    """
-    Graph processing algorithm
-    """
 
+
+def test_graph_generation():
+    '''
+    Attempts to generate the graph logic
+    from the zelda 2 map 
+    '''
+    
     romfile = z2p.structure.config_file_str("zelda2.nes")
     tilespec = z2p.structure.config_file_str("zelda2tiles.conf")
     logicspec = z2p.structure.config_file_str("zelda2logic.conf")
@@ -52,17 +42,3 @@ def test_process_graph():
                                         graph_end,
                                         logicdata,
                                         itemdata)
-
-    # breakpoint()
-    # vz = z2p.videoprocessor.VideoProcessor(
-    #     map_obj.mapData, tilespec.tileParser.tileData.TILE_COLOR
-    # )
-    # vz = z2p.videoprocessor.VideoProcessor(map_obj.mapData,
-    #                                        tilespec,
-    #                                        10)
-
-    # for ind, (region_set, region_tile_paths) in enumerate(
-    #     zip(path_proc.regionData, path_proc.pathData)
-    # ):
-    #     VIDEONAME = "{0:s}{1:d}.mp4".format('z2p_path', ind)
-    #     vz.animateSearch(region_set, region_tile_paths, VIDEONAME)
