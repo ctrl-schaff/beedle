@@ -12,9 +12,8 @@ import itertools
 import networkx as nx
 import matplotlib.pyplot as plt
 
-import z2p.node
-import z2p.pathprocessor
-import z2p.utility
+from .node import TileNode
+from .pathprocessor import PathProcessor
 
 
 class TileGraph:
