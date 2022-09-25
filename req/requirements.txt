@@ -20,6 +20,7 @@ iniconfig==1.1.1
 isort==5.10.1
 kiwisolver==1.3.2
 lazy-object-proxy==1.4.3
+loguru==0.6.0
 matplotlib==3.5.1
 mccabe==0.6.1
 moviepy==1.0.3
@@ -38,6 +39,7 @@ pyparsing==2.4.7
 pytest==6.2.5
 pytest-env==0.6.2
 python-dateutil==2.8.2
+python-dotenv==0.21.0
 requests==2.27.1
 six==1.15.0
 toml==0.10.2
@@ -50,4 +52,5 @@ typing-extensions==3.7.4.3
 urllib3==1.26.3
 virtualenv==20.13.0
 wrapt==1.12.1
+z2p_schaffjr @ file:///home/schaffj/code/Z2P
 zipp==3.4.1
