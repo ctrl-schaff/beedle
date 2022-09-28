@@ -24,15 +24,15 @@ CONFIG_DIR = ROOT_DIR.joinpath("config")
 
 
 def config_file_str(filepath: str) -> str:
-    """ Generate string for configuration file path """
+    """Generate string for configuration file path"""
     return str(CONFIG_DIR.joinpath(filepath))
 
 
 def root_file_str(filepath: str) -> str:
-    """ Generate string for root project file path """
+    """Generate string for root project file path"""
     return str(ROOT_DIR.joinpath(filepath))
 
 
 def z2p_file_str(filepath: str) -> str:
-    """ Generate string for module file path """
+    """Generate string for module file path"""
     return str(Z2P_DIR.joinpath(filepath))

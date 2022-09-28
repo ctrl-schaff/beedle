@@ -1,16 +1,15 @@
-'''
+"""
 TileMap:
 Converting the raw map data into a dictionary of connected nodes 
 storing the converted map data with tile information
     - TileMap stores a collection of Node objects
 Maps (xcoord, ycoord) -> TileNode
 
-'''
+"""
 
 from collections import UserDict
 import itertools
-from typing import (List,
-                    Tuple)
+from typing import List, Tuple
 
 from loguru import logger
 import numpy as np
@@ -21,68 +20,101 @@ from .tilenode import TileNode
 
 
 class TileMap(UserDict):
-    '''
+    """
     Graph object for handling the map node connections
-    '''
+    """
 
-    def __init__(self,
-                 map_data: np.array,
-                 location_table: List[dict],
-                 tile_table: dict):
+    def __init__(
+        self, map_data: np.array, location_table: List[dict], tile_table: dict
+    ):
         self.map_size_x, self.map_size_y = map_data.size()
-        _tile_map = self._form_tile_map(map_data,
-                                        location_table,
-                                        tile_table)
+        _tile_map = self._form_tile_map(map_data, location_table, tile_table)
         super().__init__(_tile_map)
-        
+
     def __repr__(self) -> str:
-        map_data_repr = f'[{self.map_size_x, self.map_size_y}]'
-        tilemap_repr = ('TileMap(\n'
-                        f'\tmap_data -> {map_data_repr}\n'
-                        f'\tlocation_table\n'
-                        f'\ttile_table\n')
+        map_data_repr = f"[{self.map_size_x, self.map_size_y}]"
+        tilemap_repr = (
+            "TileMap(\n"
+            f"\tmap_data -> {map_data_repr}\n"
+            f"\tlocation_table\n"
+            f"\ttile_table\n"
+        )
         return tilemap_repr
 
     def __str__(self) -> str:
-        map_data_repr = f'[{self.map_size_x, self.map_size_y}]'
-        tilemap_str = f'TileMap Instance {map_data_repr} {id(self)}\n'
+        map_data_repr = f"[{self.map_size_x, self.map_size_y}]"
+        tilemap_str = f"TileMap Instance {map_data_repr} {id(self)}\n"
         return tilemap_str
 
-    def _form_tile_map(self,
-                       map_data: np.array,
-                       location_table: List[dict],
-                       tile_table) -> dict:
-        '''
+    def _form_tile_map(
+        self, map_data: np.array, location_table: List[dict], tile_table
+    ) -> dict:
+        """
         Iterates over the coordinates of the map based off dimensions and
         creates a graph with the associated map logic for
         transforming (X, Y) -> TileNode()
-        '''
+        """
         tile_map = {}
         location_map = LocationMap(location_table)
         map_dim_x, map_dim_y = map_data.size()
         map_traversal = itertools.product(range(map_dim_x), range(map_dim_y))
         for (row_index, col_index) in map_traversal:
             tile_coord = (row_index, col_index)
-            tile_node = TileNode(tile_coord,
-                                 map_data,
-                                 location_map,
-                                 tile_table)
+            tile_node = TileNode(tile_coord, map_data, location_map, tile_table)
             tile_map[tile_coord] = tile_node
-            logger.debug(f'Added {tile_node} to {self}@{tile_coord}')
+            logger.debug(f"Added {tile_node} to {self}@{tile_coord}")
         return tile_map
 
     def __setitem__(self, key: Tuple[int, int], value: TileNode):
-        '''
+        """
         Updates the tilemap instance with a key value pair representing
         a location on the map with a TileNode object
-        '''
+        """
         if isinstance(key, tuple) and isinstance(value, TileNode):
-            if (key[0] > 0 and key[0] <= self.map_size_x and
-                    key[1] > 0 and key[1] <= self.map_size_y):
+            if (
+                key[0] > 0
+                and key[0] <= self.map_size_x
+                and key[1] > 0
+                and key[1] <= self.map_size_y
+            ):
                 self.data[key] = value
             else:
-                logger.error(f'Invalid coordinate key {key} for {self}')
+                logger.error(f"Invalid coordinate key {key} for {self}")
                 raise TileMapIndexError(self, key, value)
         else:
-            logger.error(f'Invalid input to {self}')
+            logger.error(f"Invalid input to {self}")
             raise TileMapIndexError(self, key, value)
+
+    def explore_region(self, start_coord: tuple) -> list:
+        """
+        Flood fill algorithm to explore entire possible region discoverable
+        Given two stacks (using lists)
+            > local_stack
+                Collection of search_nodes popped from the search_stack
+            > search_stack
+                Collection of tiles accumulated while traversing the graph.
+                Nodes are appended to the end of this stack if the current
+                search_node popped from the top are traversable (the global
+                inventory passes the traversal cost)
+                These nodes are added by examining the edges for each node
+                in the graph
+        """
+        search_stack = [start_coord]
+        local_stack = []
+
+        link_map = {}
+        self.link_maps[start_coord] = link_map
+        link_map[self.tile_graph[start_coord]] = None
+
+        while len(search_stack) > 0:
+            search_coord = search_stack.pop(0)
+            local_stack.append(search_coord)
+
+            tile_node = self.tile_graph[search_coord]
+            for edge_coord in tile_node.edges:
+                if edge_coord not in local_stack and edge_coord not in search_stack:
+                    tcost = set(self.tile_graph[edge_coord].traversal_cost)
+                    if tcost.issubset(self.global_inventory):
+                        search_stack.append(edge_coord)
+                        link_map[self.tile_graph[edge_coord]] = search_coord
+        return local_stack

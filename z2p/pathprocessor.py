@@ -1,11 +1,10 @@
-#!/usr/bin/env python3
-
 """
 PathProcessor:
 Implements the floodfill and pathfinding algorithms with desired path
 combinations
 """
 
+from collections import deque
 import treelib
 
 import z2p.tilepath
@@ -15,9 +14,10 @@ class PathProcessor:
     """
     Class for handling the main pathfind algorithm
     """
+
     def __init__(self, tile_graph, map_logic, map_item):
         self.global_inventory = set(["|"])
-        self.link_maps = dict()
+        self.link_maps = {}
         self.region_data = []
         self.path_data = []
 
@@ -52,11 +52,9 @@ class PathProcessor:
 
         return (region_keys, tile_paths)
 
-    def search_region_space(self,
-                            start_node: tuple,
-                            tile_paths: list,
-                            region_keys: set
-                            ):
+    def search_region_space(
+        self, start_node: tuple, tile_paths: list, region_keys: set
+    ):
         """
         Expands on the initial collection of paths to explore all potential
         combinations possible
@@ -72,12 +70,16 @@ class PathProcessor:
             pathtree = treelib.Tree()
             pathtree.create_node(identifier=path_start)
             for local_subpath in local_tile_paths:
-                tag_str = (f'{local_subpath.path_start.description} -> '
-                           f'{local_subpath.path_end.description}')
-                pathtree.create_node(tag=tag_str,
-                                     identifier=local_subpath.path_end,
-                                     parent=local_subpath.path_start,
-                                     data=local_subpath)
+                tag_str = (
+                    f"{local_subpath.path_start.description} -> "
+                    f"{local_subpath.path_end.description}"
+                )
+                pathtree.create_node(
+                    tag=tag_str,
+                    identifier=local_subpath.path_end,
+                    parent=local_subpath.path_start,
+                    data=local_subpath,
+                )
                 tile_paths.append(local_subpath)
             subtrees.append(pathtree)
         return subtrees
@@ -92,42 +94,6 @@ class PathProcessor:
             base_path = z2p.tilepath.TilePath(pcollection, self.map_item)
             tile_paths.append(base_path)
         return tile_paths
-
-    def explore_region(self, start_coord: tuple) -> list:
-        """
-        Flood fill algorithm to explore entire possible region discoverable
-        Given two stacks (using lists)
-            > local_stack
-                Collection of search_nodes popped from the search_stack
-            > search_stack
-                Collection of tiles accumulated while traversing the graph.
-                Nodes are appended to the end of this stack if the current
-                search_node popped from the top are traversable (the global
-                inventory passes the traversal cost)
-                These nodes are added by examining the edges for each node
-                in the graph
-        """
-        search_stack = [start_coord]
-        local_stack = list()
-
-        link_map = dict()
-        self.link_maps[start_coord] = link_map
-        link_map[self.tile_graph[start_coord]] = None
-
-        while len(search_stack) > 0:
-            search_coord = search_stack.pop(0)
-            local_stack.append(search_coord)
-
-            tile_node = self.tile_graph[search_coord]
-            for edge_coord in tile_node.edges:
-                if (edge_coord not in local_stack and
-                        edge_coord not in search_stack):
-                    tcost = set(self.tile_graph[edge_coord].traversal_cost)
-                    if tcost.issubset(self.global_inventory):
-                        search_stack.append(edge_coord)
-                        link_map[self.tile_graph[edge_coord]] = search_coord
-        return local_stack
-
 
     def construct_paths(self, start_node, key_set: set):
         """

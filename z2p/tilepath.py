@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 """
 TilePath:
 Collection of TileNodes representing a path

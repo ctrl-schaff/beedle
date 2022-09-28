@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 """
 TileGraph:
 Converting the raw map data into a set of connected nodes in a graph for
@@ -12,8 +10,10 @@ import itertools
 import networkx as nx
 import matplotlib.pyplot as plt
 
-from .node import TileNode
 from .pathprocessor import PathProcessor
+from .tilemap import TileMap
+from .tilenode import TileNode
+from .tilesearch import floodfill
 
 
 class TileGraph:
@@ -21,68 +21,27 @@ class TileGraph:
     Graph object for handling the map node connections
     """
 
-    def __init__(self, map_data, logic_table, tile_table):
+    def __init__(
+        self,
+        graph_start: tuple,
+        graph_end: tuple,
+        map_data: TileMap,
+        logic_table,
+        LocationMap,
+    ):
+        self.graph_start = graph_start
+        self.graph_end = graph_end
         self._tile_graph = dict()
+
         self._form_tile_graph(map_data, logic_table, tile_table)
 
-    def _form_tile_graph(self, map_data, logic_table, tile_table) -> None:
-        """
-        Iterates over the coordinates of the map based off dimensions and
-        creates a graph with the associated map logic for
-        transforming (X, Y) -> TileNode()
-        """
-        for (row_index, col_index) in itertools.product(
-            range(map_data.MAP_SIZE_X), range(map_data.MAP_SIZE_Y)
-        ):
-            tile_coord = (row_index, col_index)
-            tile_id = map_data[tile_coord]
-            tile_node = z2p.node.create_node(
-                tile_coord, tile_id, map_data, logic_table, tile_table
-            )
-            self._tile_graph[tile_coord] = tile_node
-
-    def process_graph(self,
-                      graph_start: tuple,
-                      graph_end: tuple,
-                      map_logic,
-                      map_item):
-        (topo_graph, stages, bottlenecks) = self.form_topological_graph(
-            graph_start, graph_end, map_logic, map_item
-        )
-        full_node = [graph_start]
-        for coord in bottlenecks.keys():
-            full_node.append(coord)
-        # full_node.append(graph_end)
-
-        pathproc = z2p.pathprocessor.PathProcessor(self, map_logic, map_item)
-        count = 0
-        trees = []
-        for node in full_node:
-            try:
-                item = bottlenecks[node]
-                pathproc.global_inventory.update(item)
-            except KeyError:
-                pass
-
-            (region_keys, tile_paths) = pathproc.initialize_search_space(node)
-            subtree = pathproc.search_region_space(node,
-                                                   tile_paths,
-                                                   region_keys)
-            trees.extend(subtree)
-            print(f'Iteration {count} | {node}')
-            count += 1
-
-    def form_topological_graph(self,
-                               graph_start: tuple,
-                               graph_end: tuple,
-                               map_logic,
-                               map_item):
+    def _form_tile_graph(self, map_logic, map_item, tile_table):
         """
         Iteratively explores the map and continually updates the topological
         graph formed from the logic tiles.
         Process:
             > Explore the entire possible region with a given inventory
-            > Using the maplogic object, extract the import "key" tiles
+            > Using the maplogic object, extract the import 'key' tiles
               from the entire possible region
             > Iterate over those found keys and see if the criteria is met
               to obtain the reward
@@ -90,14 +49,14 @@ class TileGraph:
               tile to the completed / visited keys set to avoid further
               duplicate processing
             > If the traversal cost is met, update the connections associated
-              with that "key" tile
+              with that 'key' tile
         End Criteria:
             > Add the graph_end tile point to the completed_keys set
         """
         path_proc = z2p.pathprocessor.PathProcessor(self, map_logic, map_item)
-        topo_graph = dict()
+        topo_graph = {}
         completed_keys = set()
-        stages = dict()
+        stages = {}
 
         stage_count = 0
         while graph_end not in completed_keys:
@@ -105,7 +64,7 @@ class TileGraph:
             region_stack = path_proc.explore_region(graph_start)
 
             region_keys = set(path_proc.key_tile) & set(region_stack)
-            stage_key = f'Stage {stage_count}'
+            stage_key = f"Stage {stage_count}"
             stage_count += 1
             stages[stage_key] = region_keys.difference(completed_keys)
 
@@ -120,8 +79,9 @@ class TileGraph:
                     for reward_item in self._tile_graph[rkey].reward:
                         interim_inventory.add(reward_item)
 
-                if (rcost.issubset(path_proc.global_inventory) and
-                        tcost.issubset(path_proc.global_inventory)):
+                if rcost.issubset(path_proc.global_inventory) and tcost.issubset(
+                    path_proc.global_inventory
+                ):
                     completed_keys.add(rkey)
 
             stages[stage_key].intersection_update(completed_keys)
@@ -140,6 +100,37 @@ class TileGraph:
                 connection_set.add(bn1[0])
                 topo_graph[bn2[0]] = tuple(connection_set)
         return (topo_graph, stages, bottlenecks)
+
+    # def process_graph(self,
+    #                   graph_start: tuple,
+    #                   graph_end: tuple,
+    #                   map_logic,
+    #                   map_item):
+    #     (topo_graph, stages, bottlenecks) = self.form_topological_graph(
+    #         graph_start, graph_end, map_logic, map_item
+    #     )
+    #     full_node = [graph_start]
+    #     for coord in bottlenecks.keys():
+    #         full_node.append(coord)
+    #     # full_node.append(graph_end)
+
+    #     pathproc = z2p.pathprocessor.PathProcessor(self, map_logic, map_item)
+    #     count = 0
+    #     trees = []
+    #     for node in full_node:
+    #         try:
+    #             item = bottlenecks[node]
+    #             pathproc.global_inventory.update(item)
+    #         except KeyError:
+    #             pass
+
+    #         (region_keys, tile_paths) = pathproc.initialize_search_space(node)
+    #         subtree = pathproc.search_region_space(node,
+    #                                                tile_paths,
+    #                                                region_keys)
+    #         trees.extend(subtree)
+    #         print(f'Iteration {count} | {node}')
+    #         count += 1
 
     def process_stages(self, map_logic, stages: dict) -> dict:
         """
@@ -172,12 +163,10 @@ class TileGraph:
                     for r_cost in self._tile_graph[crd].reward_cost:
                         curr_stage_costs.add(r_cost)
 
-                bottleneck_item = set.intersection(
-                    curr_stage_costs, prev_stage_rewards
-                )
+                bottleneck_item = set.intersection(curr_stage_costs, prev_stage_rewards)
 
                 try:
-                    bottleneck_item.remove('|')
+                    bottleneck_item.remove("|")
                 except KeyError:
                     pass
 
@@ -186,11 +175,7 @@ class TileGraph:
                 stage_cmp.pop(0)
         return bottlenecks
 
-    def form_network_graph(self,
-                           topological_graph: dict,
-                           graph_end: tuple,
-                           map_logic
-                           ):
+    def form_network_graph(self, topological_graph: dict, graph_end: tuple, map_logic):
         """
         Takes the calculated topological graph and visualizes the graph network
         """
@@ -212,17 +197,17 @@ class TileGraph:
                         node_traversal.append(cnode)
 
         plt.figure()
-        node_position = nx.get_node_attributes(topo_network_graph, 'pos')
+        node_position = nx.get_node_attributes(topo_network_graph, "pos")
         nx.draw_networkx(topo_network_graph, node_position)
         net_ax = plt.gca()
         net_ax.invert_yaxis()
         plt.grid()
         plt.show()
 
-    def __getitem__(self, index: tuple):
-        graph_entry = z2p.node.TileNode()
-        try:
-            graph_entry = self._tile_graph[index]
-        except KeyError as gen_err:
-            raise gen_err
-        return graph_entry
+    # def __getitem__(self, index: tuple) -> TileNode:
+    #     graph_entry = None
+    #     try:
+    #         graph_entry = self._tile_graph[index]
+    #     except KeyError as gen_err:
+    #         raise gen_err
+    #     return graph_entry
