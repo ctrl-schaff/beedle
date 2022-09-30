@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "z2p_schaffjr"
+version = "0.0.1"
+authors = [
+  { name="Johnathan Schaff", email="schaffjohnathan@gmail.com" },
+]
+description = "path generation library"
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+]
+
+[project.urls]
+"Homepage" = "https://github.com/pypa/z2p"
+"Bug Tracker" = "https://github.com/pypa/z2p/issues"
+
