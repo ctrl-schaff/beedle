@@ -16,7 +16,7 @@ Example location dictionary structure
 """
 
 from collections import UserDict
-from typing import Any, List
+from typing import Any, List, Tuple
 
 from loguru import logger
 
@@ -71,3 +71,29 @@ class LocationMap(UserDict):
         )
         logger.error(frozen_location_msg)
         raise AttributeError(frozen_location_msg)
+
+    @property
+    def location_coordinates(self) -> Tuple[int, int]:
+        """
+        Extracts the location entrance from the specified locations
+        and transforms it into a set of coordinate locations
+        key_view -> set[tuple]
+        """
+        location_properties = self.data.keys()
+        location_coordinates = {
+            tuple(location.entrance) for location in location_properties
+        }
+        return location_coordinates
+
+    @property
+    def location_rewards(self) -> List[str]:
+        """
+        Extracts the location entrance from the specified locations
+        and transforms it into a set of coordinate locations
+        key_view -> set[tuple]
+        """
+        location_properties = self.data.keys()
+        location_rewards = {
+            tuple(location.reward) for location in location_properties
+        }
+        return location_coordinates

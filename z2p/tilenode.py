@@ -66,18 +66,20 @@ class TileNode:
         self.symbol = tile_table[node_id]["SYMBOL"]
         self.color = tile_table[node_id]["COLOR"]
 
-        logic_entry = location_map[self.location]
-        self.description = logic_entry.description
-        self.traversal_cost = logic_entry.traversal_cost
-        self.reward_cost = logic_entry.reward_cost
-        self.reward = logic_entry.reward
+        location_properties = location_map[self.location]
+        self.description = location_properties.description
+        self.traversal_cost = location_properties.traversal_cost
+        self.reward_cost = location_properties.reward_cost
+        self.reward = location_properties.reward
 
-        self.edges = self.get_node_edges(map_data, logic_entry)
+        self.edges = self.get_node_edges(map_data, location_properties)
 
     def __repr__(self) -> str:
         edge_str = "{" + " ".join(map(str, self.edges)) + "}"
         fstr = "\nTILE:[{0:d},{1:d}]\nTYPE:{2:s}\nDESC:{3:s}\nEDGE:{4:s}"
-        return fstr.format(*self.location, self.background, self.description, edge_str)
+        return fstr.format(
+            *self.location, self.background, self.description, edge_str
+        )
 
     def get_node_edges(self, map_data: np.array, location: dict) -> tuple:
         """
@@ -88,7 +90,10 @@ class TileNode:
         edges = [
             edge
             for edge in adj_edges
-            if ((edge[0] >= 0 and edge[0] < mapx) and (edge[1] >= 0 and edge[1] < mapy))
+            if (
+                (edge[0] >= 0 and edge[0] < mapx)
+                and (edge[1] >= 0 and edge[1] < mapy)
+            )
         ]
 
         if location["entrance"] != location["exit"]:

@@ -7,13 +7,15 @@ map data with tile information
 """
 
 import itertools
+
+from loguru import logger
 import networkx as nx
 import matplotlib.pyplot as plt
 
 from .pathprocessor import PathProcessor
 from .tilemap import TileMap
 from .tilenode import TileNode
-from .tilesearch import floodfill
+from .tilesearch import PartialTileMap
 
 
 class TileGraph:
@@ -26,16 +28,18 @@ class TileGraph:
         graph_start: tuple,
         graph_end: tuple,
         map_data: TileMap,
-        logic_table,
-        LocationMap,
+        location_map: LocationMap,
+        tile_table,
     ):
         self.graph_start = graph_start
         self.graph_end = graph_end
         self._tile_graph = dict()
 
-        self._form_tile_graph(map_data, logic_table, tile_table)
+        self._form_tile_graph(map_data, location_map, tile_table)
 
-    def _form_tile_graph(self, map_logic, map_item, tile_table):
+    def _form_tile_graph(
+        self, map_data: TileMap, map_item: LocationMap, tile_table
+    ):
         """
         Iteratively explores the map and continually updates the topological
         graph formed from the logic tiles.
@@ -53,41 +57,8 @@ class TileGraph:
         End Criteria:
             > Add the graph_end tile point to the completed_keys set
         """
-        path_proc = z2p.pathprocessor.PathProcessor(self, map_logic, map_item)
-        topo_graph = {}
-        completed_keys = set()
-        stages = {}
-
-        stage_count = 0
-        while graph_end not in completed_keys:
-            interim_inventory = set()
-            region_stack = path_proc.explore_region(graph_start)
-
-            region_keys = set(path_proc.key_tile) & set(region_stack)
-            stage_key = f"Stage {stage_count}"
-            stage_count += 1
-            stages[stage_key] = region_keys.difference(completed_keys)
-
-            for rkey in region_keys.difference(completed_keys):
-                rcost = set([*self._tile_graph[rkey].reward_cost])
-                tcost = set([*self._tile_graph[rkey].traversal_cost])
-
-                item_set = rcost | tcost
-                topo_graph[rkey] = map_logic.reward_lookup(item_set)
-
-                if rcost.issubset(path_proc.global_inventory):
-                    for reward_item in self._tile_graph[rkey].reward:
-                        interim_inventory.add(reward_item)
-
-                if rcost.issubset(path_proc.global_inventory) and tcost.issubset(
-                    path_proc.global_inventory
-                ):
-                    completed_keys.add(rkey)
-
-            stages[stage_key].intersection_update(completed_keys)
-            path_proc.global_inventory.update(interim_inventory)
-
-        bottlenecks = self.process_stages(map_logic, stages)
+        graph_stages = self.chunks()
+        bottlenecks = self.process_stages(map_logic, graph_stages)
 
         (bn_iter1, bn_iter2) = itertools.tee(bottlenecks.items(), 2)
         bn_iter2.__next__()
@@ -99,14 +70,57 @@ class TileGraph:
                         connection_set.add(coord)
                 connection_set.add(bn1[0])
                 topo_graph[bn2[0]] = tuple(connection_set)
-        return (topo_graph, stages, bottlenecks)
+        return (topo_graph, graph_stages, bottlenecks)
+
+    def _find_map_chunks(self, stage_limit: int):
+        """
+        Explore the map in chunks given the constraints provided
+        by the configuration. Iterates over the map until the
+        graph_end specified in the constructor has been marked as
+        completed or we reach the iteration limit set by the
+        stage_limit value
+        """
+        graph_stages = []
+        completed_keys = set()
+        search_inventory = set()
+
+        stage_count = 0
+        while self.graph_end not in completed_keys:
+            logger.info("Graph Search Stage #{stage_count} ")
+            stage_count += 1
+
+            ptile_map = PartialTileMap(
+                tile_map, self.graph_start, search_inventory
+            )
+
+            discovered_locations = ptile_map.discovered_locations(location_map)
+            stage_locations = discovered_locations.difference(completed_keys)
+
+            graph_stages.append(stage_locations)
+            for loc in stage_locations:
+                rcost = set([*map_data[loc].reward_cost])
+                tcost = set([*map_data[loc].traversal_cost])
+                total_cost = rcost | tcost
+
+                self._tile_graph[loc] = map_logic.reward_lookup(total_cost)
+
+                if rcost.issubset(search_inventory):
+                    for reward_item in self._tile_graph[loc].reward:
+                        search_inventory.add(reward_item)
+
+                if total_cost.issubset(search_inventory):
+                    completed_keys.add(loc)
+
+            graph_stages[stage_key].intersection_update(completed_keys)
+            path_proc.global_inventory.update(interim_inventory)
+        return graph_stages
 
     # def process_graph(self,
     #                   graph_start: tuple,
     #                   graph_end: tuple,
     #                   map_logic,
     #                   map_item):
-    #     (topo_graph, stages, bottlenecks) = self.form_topological_graph(
+    #     (topo_graph, graph_stages, bottlenecks) = self.form_topological_graph(
     #         graph_start, graph_end, map_logic, map_item
     #     )
     #     full_node = [graph_start]
@@ -132,14 +146,14 @@ class TileGraph:
     #         print(f'Iteration {count} | {node}')
     #         count += 1
 
-    def process_stages(self, map_logic, stages: dict) -> dict:
+    def process_stages(self, map_logic, graph_stages: dict) -> dict:
         """
         Debugging method for visualizing bottlenecks in the topological
         graph formation
         """
         bottlenecks = dict()
         stage_cmp = []
-        for stage_lvl, coord_collection in stages.items():
+        for stage_lvl, coord_collection in graph_stages.items():
             stage_cmp.append(coord_collection)
             # print(f'{stage_lvl}')
             # for coord in coord_collection:
@@ -163,19 +177,18 @@ class TileGraph:
                     for r_cost in self._tile_graph[crd].reward_cost:
                         curr_stage_costs.add(r_cost)
 
-                bottleneck_item = set.intersection(curr_stage_costs, prev_stage_rewards)
-
-                try:
-                    bottleneck_item.remove("|")
-                except KeyError:
-                    pass
+                bottleneck_item = set.intersection(
+                    curr_stage_costs, prev_stage_rewards
+                )
 
                 bottleneck_coord = map_logic.reward_lookup(bottleneck_item)
                 bottlenecks[bottleneck_coord[0]] = bottleneck_item
                 stage_cmp.pop(0)
         return bottlenecks
 
-    def form_network_graph(self, topological_graph: dict, graph_end: tuple, map_logic):
+    def form_network_graph(
+        self, topological_graph: dict, graph_end: tuple, map_logic
+    ):
         """
         Takes the calculated topological graph and visualizes the graph network
         """
