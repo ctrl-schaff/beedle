@@ -21,7 +21,10 @@ from .tilenode import TileNode
 
 class TileMap(UserDict):
     """
-    Graph object for handling the map node connections
+    Dictionary representing the 2D tile map
+    key -> Tuple[int, int] representing tile coordinate
+    value -> TileNode object with properties and information
+             specific to the tile based off the configuration
     """
 
     def __init__(
@@ -60,9 +63,17 @@ class TileMap(UserDict):
         map_traversal = itertools.product(range(map_dim_x), range(map_dim_y))
         for (row_index, col_index) in map_traversal:
             tile_coord = (row_index, col_index)
+            tile_value = map_data[tile_coord]
+            location_properties = location_map[tile_coord]
+            tile_properties = tile_table[str(tile_value)]
+
             tile_node = TileNode(
-                tile_coord, map_data, location_map, tile_table
+                tile_value,
+                map_data.shape,
+                location_properties,
+                tile_properties,
             )
+
             tile_map[tile_coord] = tile_node
             logger.debug(f"Added {tile_node} to {self}@{tile_coord}")
         return tile_map

@@ -44,61 +44,84 @@ Data Structure for storing constant properties of the map tiles
 
 
 import operator
+from typing import Tuple
 
+from loguru import logger
 import numpy as np
-
-from .tilelocations import LocationMap
 
 
 class TileNode:
     def __init__(
         self,
-        node_location: tuple,
+        tile_value: int,
         map_data: np.array,
-        location_map: LocationMap,
-        tile_table: dict,
+        location_properties: dict,
+        tile_properties: dict,
     ):
-        node_id = map_data[node_location]
-        self.identifier = node_id
-        self.location = node_location
+        self.identifier = tile_value
+        self.location = location_properties["entrance"]
 
-        self.background = tile_table[node_id]["TYPE"]
-        self.symbol = tile_table[node_id]["SYMBOL"]
-        self.color = tile_table[node_id]["COLOR"]
-
-        location_properties = location_map[self.location]
         self.description = location_properties.description
-        self.traversal_cost = location_properties.traversal_cost
-        self.reward_cost = location_properties.reward_cost
-        self.reward = location_properties.reward
 
-        self.edges = self.get_node_edges(map_data, location_properties)
+        self.traversal_cost = location_properties["traversal_cost"]
+        self.reward_cost = location_properties["reward_cost"]
+        self.reward = location_properties["reward"]
+
+        self.background = tile_properties["TYPE"]
+        self.symbol = tile_properties["SYMBOL"]
+        self.color = tile_properties["COLOR"]
+
+        exit_edge = location_properties["exit"]
+        self.edges = self.get_node_edges(map_data, exit_edge)
 
     def __repr__(self) -> str:
-        edge_str = "{" + " ".join(map(str, self.edges)) + "}"
-        fstr = "\nTILE:[{0:d},{1:d}]\nTYPE:{2:s}\nDESC:{3:s}\nEDGE:{4:s}"
-        return fstr.format(
-            *self.location, self.background, self.description, edge_str
+        tile_node_repr = (
+            "TileNode(\n"
+            f"\ttile_coordinates -> {self.location}\n"
+            f"\ttile_value -> {self.identifier}\n"
+            f"\tmap_data\n"
+            f"\tlocation_properties\n"
+            f"\ttile_properties\n"
         )
+        return tile_node_repr
 
-    def get_node_edges(self, map_data: np.array, location: dict) -> tuple:
+    def __str__(self) -> str:
+        edge_str = "{" + " ".join(map(str, self.edges)) + "}"
+        tile_node_str = (
+            f"Tile Coordinates:[{self.location}]\n"
+            f"Tile Type:{self.background}\n"
+            f"Tile Description:{self.description}\n"
+            f"Tile Edges:{edge_str}"
+        )
+        return tile_node_str
+
+    def get_node_edges(
+        self, map_size: Tuple[int, int], exit_edge: Tuple[int, int]
+    ) -> tuple:
         """
-        Get the adjacent node edges that fit the logic
+        Generate all edge values for the TileNode object
+
+        This looks at all adjacent coordinate values and adds them to a list as a collection
+        of Tuple[int, int] types
+
+        Additional checks the location properties for an exit value that is different
+        than the entrance to indicate a potential non-adjacent node that should be added
+        to the edges collection
         """
         adj_edges = self.get_neighbors(self.location)
-        (mapx, mapy) = map_data.map_data.shape
+        map_x_limit, map_y_limit = map_size
         edges = [
             edge
             for edge in adj_edges
             if (
-                (edge[0] >= 0 and edge[0] < mapx)
-                and (edge[1] >= 0 and edge[1] < mapy)
+                (edge[0] >= 0 and edge[0] < map_x_limit)
+                and (edge[1] >= 0 and edge[1] < map_y_limit)
             )
         ]
 
-        if location["entrance"] != location["exit"]:
-            location_exit = tuple(location["exit"])
-            edges.append(location_exit)
+        if self.location != exit_edge:
+            logger.debug(f"Found additional exit edge {exit_edge} for {self}")
+            edges.append(exit_edge)
 
         return tuple(edges)
 

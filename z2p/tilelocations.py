@@ -13,6 +13,16 @@ Example location dictionary structure
       "reward_cost": [],
       "reward": []
     }
+
+New transformed location dictionary structure
+    {
+      "description": str
+      "entrance": Tuple[int, int],
+      "exit": Tuple[int, int]
+      "traversal_cost": Set,
+      "reward_cost": Set,
+      "reward": Set
+    }
 """
 
 from collections import UserDict
@@ -35,7 +45,7 @@ class LocationMap(UserDict):
             super().__setitem__(key, value)
 
     def __repr__(self) -> str:
-        location_map_repr = "LocationMap(\n" "\tlocation_data\n"
+        location_map_repr = "LocationMap(\n" "\tlocation_data\n)"
         return location_map_repr
 
     def __str__(self) -> str:
@@ -49,9 +59,19 @@ class LocationMap(UserDict):
         """
         location_map = {}
         for location_entry in location_data:
-            location_coord = tuple(location_entry["entrance"])
-            location_map[location_coord] = location_entry
-            logger.debug(f"Added entry to {self}@{location_coord}")
+            location_entry["entrance"] = tuple(location_entry["entrance"])
+            location_entry["exit"] = tuple(location_entry["exit"])
+
+            location_entry["traversal_cost"] = set(
+                location_entry["traversal_cost"]
+            )
+            location_entry["reward_cost"] = set(location_entry["reward_cost"])
+            location_entry["reward"] = set(location_entry["reward"])
+
+            location_coordinates = location_entry["entrance"]
+            location_map[location_coordinates] = location_entry
+
+            logger.debug(f"Added entry to {self}@{location_coordinates}")
         return location_map
 
     def __set_item__(self, key: Any, value: Any):
@@ -81,19 +101,20 @@ class LocationMap(UserDict):
         """
         location_properties = self.data.keys()
         location_coordinates = {
-            tuple(location.entrance) for location in location_properties
+            location.entrance for location in location_properties
         }
         return location_coordinates
 
-    @property
-    def location_rewards(self) -> List[str]:
+    def location_item_search(self, item_collection: set) -> tuple:
         """
-        Extracts the location entrance from the specified locations
-        and transforms it into a set of coordinate locations
-        key_view -> set[tuple]
+        Provided an item value to search, will iterate over the
+        stored location coordinates and return a tuple collection of
+        the tile coordinates if the item is stored within the locations
+        reward
         """
-        location_properties = self.data.keys()
-        location_rewards = {
-            tuple(location.reward) for location in location_properties
-        }
-        return location_coordinates
+        tile_data = []
+        for item_value in item_collection:
+            for location_coordinates, location_properties in self.data.items():
+                if item_value in location_properties.reward:
+                    tile_data.append(location_coordinates)
+        return tuple(tile_data)

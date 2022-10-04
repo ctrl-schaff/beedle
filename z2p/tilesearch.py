@@ -23,6 +23,8 @@ class PartialTileMap:
         self, tile_map: TileMap, start_coord: Coord, item_inventory: Set[str]
     ):
         self.link_map = {}
+        self.reward_collection = set()
+        self.cost_collection = set()
         self.partial_map_tiles = self.floodfill(
             tile_map, start_coord, item_inventory
         )
@@ -65,6 +67,11 @@ class PartialTileMap:
             logger.debug(f"Processing {search_coord}")
             discover_queue.append(search_coord)
 
+            search_node = tile_map[search_coord]
+            self.reward_collection.update(search_node.reward)
+            self.cost_collection.update(search_node.reward_cost)
+            self.cost_collection.update(search_node.traversal_cost)
+
             tile_node = tile_map[search_coord]
             for edge in tile_node.edges:
                 logger.debug(f"Processing {search_coord} edge {edge}")
@@ -75,12 +82,41 @@ class PartialTileMap:
                         self.link_map[tile_map[edge]] = search_coord
         return discover_queue
 
-    def discovered_locations(self, full_location_map: LocationMap) -> set:
+    def find_new_locations(
+        self,
+        tile_map: TileMap,
+        location_map: LocationMap,
+        completed_keys: set,
+        search_inventory: set,
+    ):
+        discovered_locations = self.discovered_locations(location_map)
+        stage_locations = discovered_locations.difference(completed_keys)
+        reward_map = {}
+
+        for location in stage_locations:
+            reward_cost = tile_map[location].reward_cost
+            traversal_cost = tile_map[location].traversal_cost
+            total_cost = reward_cost | traversal_cost
+
+            reward_map[location] = location_map.location_item_lookup(
+                total_cost
+            )
+
+            if reward_cost.issubset(search_inventory):
+                for reward_item in reward_map[location].reward:
+                    search_inventory.add(reward_item)
+
+            if total_cost.issubset(search_inventory):
+                completed_keys.add(location)
+
+        stage_locations.intersection_update(completed_keys)
+
+    def discovered_locations(self, location_map: LocationMap) -> set:
         """
         Compares the discovered tiles against the full set
             of key locations and returns the intersection
         """
-        full_location_set = full_location_map.location_coordinates
+        full_location_set = location_map.location_coordinates
         partial_set = set(self.partial_map_tiles)
-        discovered_locations = full_property_set.intersection(partial_set)
+        discovered_locations = full_location_set.intersection(partial_set)
         return discovered_locations
