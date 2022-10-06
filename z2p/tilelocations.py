@@ -26,7 +26,7 @@ New transformed location dictionary structure
 """
 
 from collections import UserDict
-from typing import Any, List, Tuple
+from typing import Any, List, Set, Tuple
 
 from loguru import logger
 
@@ -44,9 +44,7 @@ class LocationMap(UserDict):
         for key, value in _location_map.items():
             super().__setitem__(key, value)
 
-    def __repr__(self) -> str:
-        location_map_repr = "LocationMap(\n" "\tlocation_data\n)"
-        return location_map_repr
+        self.__entrance_locations = None
 
     def __str__(self) -> str:
         location_map_str = f"LocationMap Instance {id(self)}"
@@ -93,17 +91,19 @@ class LocationMap(UserDict):
         raise AttributeError(frozen_location_msg)
 
     @property
-    def location_coordinates(self) -> Tuple[int, int]:
+    def entrance_locations(self) -> Set[Tuple[int, int]]:
         """
         Extracts the location entrance from the specified locations
         and transforms it into a set of coordinate locations
         key_view -> set[tuple]
         """
-        location_properties = self.data.keys()
-        location_coordinates = {
-            location.entrance for location in location_properties
-        }
-        return location_coordinates
+        if self.__entrance_locations is None:
+            logger.debug("Populating __entrance_locations property")
+            location_properties = self.data.values()
+            self.__entrance_locations = {
+                location["entrance"] for location in location_properties
+            }
+        return self.__entrance_locations
 
     def location_item_search(self, item_collection: set) -> tuple:
         """
@@ -115,6 +115,6 @@ class LocationMap(UserDict):
         tile_data = []
         for item_value in item_collection:
             for location_coordinates, location_properties in self.data.items():
-                if item_value in location_properties.reward:
+                if item_value in location_properties["reward"]:
                     tile_data.append(location_coordinates)
         return tuple(tile_data)

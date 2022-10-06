@@ -10,11 +10,9 @@ import itertools
 from typing import List
 
 from loguru import logger
-import networkx as nx
-import matplotlib.pyplot as plt
 
 from .pathprocessor import PathProcessor
-from .tilelocation import LocationMap
+from .tilelocations import LocationMap
 from .tilemap import TileMap
 from .tilenode import TileNode
 from .tilesearch import PartialTileMap
@@ -57,7 +55,6 @@ class TileGraph:
             > Add the graph_end tile point to the completed_keys set
         """
         map_chunk = self.__find_map_chunks(map_data, location_map)
-        bottlenecks = self.__find_map_bottlenecks(map_chunk, location_map)
         self.__process_bottlenecks(bottlenecks)
 
         return (topo_graph, map_chunk, bottlenecks)
@@ -81,11 +78,13 @@ class TileGraph:
         map_chunk = []
         completed_keys = set()
         search_inventory = set()
+        bottlenecks = {}
 
-        stage_count = 0
+        chunk_count = 0
+        chunk_pointer = None
         while self.graph_end not in completed_keys:
-            logger.info("Graph Search Stage #{stage_count} ")
-            stage_count += 1
+            logger.info("Graph Search Partial Chunk #{chunk_count} ")
+            chunk_count += 1
 
             ptile_map = PartialTileMap(
                 tile_map, self.graph_start, search_inventory
@@ -95,51 +94,20 @@ class TileGraph:
                 tile_map, location_map, completed_keys, search_inventory
             )
             map_chunk.append(ptile_map)
-        return map_chunk
 
-    def __find_map_bottlenecks(
-        self, map_chunk: List, location_map: LocationMap
-    ) -> dict:
-        """
-        Debugging method for visualizing bottlenecks in the topological
-        graph formation
-        """
-        bottlenecks = {}
-        stage_cmp = []
-        for coord_collection in map_chunk:
-            stage_cmp.append(coord_collection)
-            # print(f'{stage_lvl}')
-            # for coord in coord_collection:
-            #     msg = (f'{coord} | '
-            #            f'{self._tile_graph[coord].traversal_cost} | '
-            #            f'{self._tile_graph[coord].reward_cost} | '
-            #            f'{self._tile_graph[coord].reward}')
-            #     print(msg)
-
-            if len(stage_cmp) == 2:
-                prev_stage_rewards = set()
-                for crd in stage_cmp[0]:
-                    for rew in self._tile_graph[crd].reward:
-                        prev_stage_rewards.add(rew)
-
-                curr_stage_costs = set()
-                for crd in stage_cmp[1]:
-                    for t_cost in self._tile_graph[crd].traversal_cost:
-                        curr_stage_costs.add(t_cost)
-
-                    for r_cost in self._tile_graph[crd].reward_cost:
-                        curr_stage_costs.add(r_cost)
-
-                bottleneck_item = set.intersection(
-                    curr_stage_costs, prev_stage_rewards
+            if chunk_pointer:
+                item_bottleneck = set.intersection(
+                    ptile_map.cost_collection, chunk_pointer.reward_collection
                 )
 
                 bottleneck_coord = location_map.location_item_lookup(
-                    bottleneck_item
+                    item_bottleneck
                 )
-                bottlenecks[bottleneck_coord[0]] = bottleneck_item
-                stage_cmp.pop(0)
-        return bottlenecks
+                bottlenecks[bottleneck_coord[0]] = item_bottleneck
+
+            chunk_pointer = ptile_map
+
+        return map_chunk
 
     def __process_bottlenecks(self, bottlenecks):
         (bn_iter1, bn_iter2) = itertools.tee(bottlenecks.items(), 2)

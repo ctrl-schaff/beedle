@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import functools
+import json
 import itertools
 import os
 import pathlib
@@ -91,13 +92,16 @@ def romfile() -> pathlib.Path:
 
 
 @pytest.fixture
-def configuration() -> pathlib.Path:
+def configuration() -> dict:
     """
     Fixture for loading the zelda 2 config file
     provided in the pytest.ini [env] section
     """
     env_variable_name = "CONFIG_PATH"
-    yield load_environment_variable(env_variable_name)
+    config_path = load_environment_variable(env_variable_name)
+    with open(config_path, "r", encoding="utf-8") as config_handle:
+        config_data = json.load(config_handle)
+    yield config_data
 
 
 def load_environment_variable(env_variable_name: str) -> pathlib.Path:

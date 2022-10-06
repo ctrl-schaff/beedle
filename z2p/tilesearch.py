@@ -67,11 +67,6 @@ class PartialTileMap:
             logger.debug(f"Processing {search_coord}")
             discover_queue.append(search_coord)
 
-            search_node = tile_map[search_coord]
-            self.reward_collection.update(search_node.reward)
-            self.cost_collection.update(search_node.reward_cost)
-            self.cost_collection.update(search_node.traversal_cost)
-
             tile_node = tile_map[search_coord]
             for edge in tile_node.edges:
                 logger.debug(f"Processing {search_coord} edge {edge}")
@@ -86,17 +81,46 @@ class PartialTileMap:
         self,
         tile_map: TileMap,
         location_map: LocationMap,
-        completed_keys: set,
+        completed_locations: set,
         search_inventory: set,
     ):
-        discovered_locations = self.discovered_locations(location_map)
-        stage_locations = discovered_locations.difference(completed_keys)
-        reward_map = {}
+        """
+        After having performed the floodfill algorithm to complete the
+        full set of discoverable TileNodes within the TileMap for this
+        subsection, this method finds all locations specified by the
+        LocationMap
 
-        for location in stage_locations:
-            reward_cost = tile_map[location].reward_cost
-            traversal_cost = tile_map[location].traversal_cost
+        It takes then difference between those locations and the completed
+        locations to ensure that all locations discovered are unique to this
+        PartialTileMap
+
+        Iterates over the unique locations for this PartialTileMap:
+            > Updates the reward_collection property with all unique
+            locations reward values
+            > Updates the cost_collection property with all unique
+            locations reward values
+            > Builds a dictionary mapping Tuple[int, int] coordinates
+            to map items discovered as unique locations to this PartialTileMap
+            > Checks if the reward_cost is met to update the search_inventory
+            with any rewards that were discovered in the unique_location
+            > Checks if the total_cost has been met by the search_inventory
+            in order to mark the location as having been completed
+
+        """
+        discovered_locations = self.discovered_locations(location_map)
+        unique_locations = discovered_locations.difference(completed_locations)
+
+        reward_map = {}
+        for location in unique_locations:
+            unique_node = tile_map[location]
+
+            reward_collection = unique_node.reward
+            reward_cost = unique_node.reward_cost
+            traversal_cost = unique_node.traversal_cost
             total_cost = reward_cost | traversal_cost
+
+            self.reward_collection.update(reward_collection)
+            self.cost_collection.update(total_cost)
 
             reward_map[location] = location_map.location_item_lookup(
                 total_cost
@@ -107,16 +131,16 @@ class PartialTileMap:
                     search_inventory.add(reward_item)
 
             if total_cost.issubset(search_inventory):
-                completed_keys.add(location)
+                completed_locations.add(location)
 
-        stage_locations.intersection_update(completed_keys)
+        unique_locations.intersection_update(completed_locations)
 
     def discovered_locations(self, location_map: LocationMap) -> set:
         """
         Compares the discovered tiles against the full set
             of key locations and returns the intersection
         """
-        full_location_set = location_map.location_coordinates
+        full_location_set = location_map.entrance_locations
         partial_set = set(self.partial_map_tiles)
         discovered_locations = full_location_set.intersection(partial_set)
         return discovered_locations
