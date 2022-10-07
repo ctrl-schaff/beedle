@@ -43,6 +43,10 @@ class TilePath:
 
     def __repr__(self) -> str:
         path_view = [self.collection[0], self.collection[-1]]
-        col_str = "{" + " ".join(map(str, path_view)) + "}"
-        fstr = "\nSCORE:{0:d}\nLENGTH:{1:d}\nCOLLECTION:{2:s}"
-        return fstr.format(col_str)
+        collection_repr = "{" + " ".join(map(str, path_view)) + "}"
+        tilepath_repr = (
+            f"HEAD | Tail:{path_view}\n"
+            f"LENGTH:{len(self.collection)}\n"
+            f"COLLECTION:{collection_repr}\n"
+        )
+        return tilepath_repr

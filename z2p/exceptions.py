@@ -20,9 +20,9 @@ class TileMapIndexError(KeyError):
         and the provided key-value pair provided
         """
         message = (
-            f"Unable to update TileMap instance {tilemap} "
-            f"with key {key} + value {value} pair\n"
-            "Expected tuple key value representing coordinates "
-            "and TileNode object value"
+            f"{{key:{key}, value:{value}}}\n"
+            f"Unable to access TileMap instance {tilemap}\n"
+            f"Expected key type: Tuple[int, int]\n"
+            f"Expected value type: TileNode\n"
         )
         return message

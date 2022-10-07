@@ -69,8 +69,21 @@ class LocationMap(UserDict):
             location_coordinates = location_entry["entrance"]
             location_map[location_coordinates] = location_entry
 
-            logger.debug(f"Added entry to {self}@{location_coordinates}")
+            logger.debug(f"Added entry [{location_coordinates}] to {self}")
         return location_map
+
+    def __missing__(self, key: Any) -> dict:
+        """
+        Handles the cases where we attempt to access
+        additional location properties for tiles
+        with no additional information
+
+        Defaults to returning an empty dict
+        """
+        default_resp = {}
+        missing_msg = f"Unable to find key {key}"
+        logger.debug(missing_msg)
+        return default_resp
 
     def __set_item__(self, key: Any, value: Any):
         frozen_location_msg = (

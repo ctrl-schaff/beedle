@@ -27,16 +27,16 @@ class TileGraph:
         self,
         graph_start: tuple,
         graph_end: tuple,
-        map_data: TileMap,
+        tile_map: TileMap,
         location_map: LocationMap,
     ):
         self.graph_start = graph_start
         self.graph_end = graph_end
         self._tile_graph = {}
 
-        self._form_tile_graph(map_data, location_map)
+        self._form_tile_graph(tile_map, location_map)
 
-    def _form_tile_graph(self, map_data: TileMap, location_map: LocationMap):
+    def _form_tile_graph(self, tile_map: TileMap, location_map: LocationMap):
         """
         Iteratively explores the map and continually updates the topological
         graph formed from the logic tiles.
@@ -54,7 +54,7 @@ class TileGraph:
         End Criteria:
             > Add the graph_end tile point to the completed_keys set
         """
-        map_chunk = self.__find_map_chunks(map_data, location_map)
+        map_chunk = self.__find_map_chunks(tile_map, location_map)
         self.__process_bottlenecks(bottlenecks)
 
         return (topo_graph, map_chunk, bottlenecks)
@@ -83,7 +83,7 @@ class TileGraph:
         chunk_count = 0
         chunk_pointer = None
         while self.graph_end not in completed_keys:
-            logger.info("Graph Search Partial Chunk #{chunk_count} ")
+            logger.info(f"Graph Search Partial Chunk #{chunk_count}")
             chunk_count += 1
 
             ptile_map = PartialTileMap(

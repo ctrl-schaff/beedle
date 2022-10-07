@@ -1,15 +1,14 @@
 """
 TileMap:
-Converting the raw map data into a dictionary of connected nodes 
+Converting the raw map data into a dictionary of connected nodes
 storing the converted map data with tile information
     - TileMap stores a collection of Node objects
 Maps (xcoord, ycoord) -> TileNode
-
 """
 
 from collections import UserDict
 import itertools
-from typing import List, Tuple
+from typing import Any, Tuple
 
 from loguru import logger
 import numpy as np
@@ -28,21 +27,14 @@ class TileMap(UserDict):
     """
 
     def __init__(
-        self, map_data: np.array, location_table: List[dict], tile_table: dict
+        self, map_data: np.array, location_map: LocationMap, tile_table: dict
     ):
-        self.map_size_x, self.map_size_y = map_data.size()
-        _tile_map = self._form_tile_map(map_data, location_table, tile_table)
-        super().__init__(_tile_map)
+        map_dim = map_data.shape
+        self.map_size_x = map_dim[0]
+        self.map_size_y = map_dim[1]
 
-    def __repr__(self) -> str:
-        map_data_repr = f"[{self.map_size_x, self.map_size_y}]"
-        tilemap_repr = (
-            "TileMap(\n"
-            f"\tmap_data -> {map_data_repr}\n"
-            f"\tlocation_table\n"
-            f"\ttile_table\n"
-        )
-        return tilemap_repr
+        _tile_map = self._form_tile_map(map_data, location_map, tile_table)
+        super().__init__(_tile_map)
 
     def __str__(self) -> str:
         map_data_repr = f"[{self.map_size_x, self.map_size_y}]"
@@ -50,7 +42,7 @@ class TileMap(UserDict):
         return tilemap_str
 
     def _form_tile_map(
-        self, map_data: np.array, location_table: List[dict], tile_table
+        self, map_data: np.array, location_map: LocationMap, tile_table
     ) -> dict:
         """
         Iterates over the coordinates of the map based off dimensions and
@@ -58,9 +50,9 @@ class TileMap(UserDict):
         transforming (X, Y) -> TileNode()
         """
         tile_map = {}
-        location_map = LocationMap(location_table)
-        map_dim_x, map_dim_y = map_data.size()
-        map_traversal = itertools.product(range(map_dim_x), range(map_dim_y))
+        map_axis_x = range(self.map_size_x)
+        map_axis_y = range(self.map_size_y)
+        map_traversal = itertools.product(map_axis_x, map_axis_y)
         for (row_index, col_index) in map_traversal:
             tile_coord = (row_index, col_index)
             tile_value = map_data[tile_coord]
@@ -68,6 +60,7 @@ class TileMap(UserDict):
             tile_properties = tile_table[str(tile_value)]
 
             tile_node = TileNode(
+                tile_coord,
                 tile_value,
                 map_data.shape,
                 location_properties,
@@ -75,8 +68,15 @@ class TileMap(UserDict):
             )
 
             tile_map[tile_coord] = tile_node
-            logger.debug(f"Added {tile_node} to {self}@{tile_coord}")
+            logger.debug(f"Added new TileNode@{self}+{tile_node}")
         return tile_map
+
+    def __missing__(self, key: Any):
+        """
+        Any missing key values should raise a TileMapIndexError
+        """
+        logger.error(f"{self} Unable to access key {key}")
+        raise TileMapIndexError(self, key, None)
 
     def __setitem__(self, key: Tuple[int, int], value: TileNode):
         """
@@ -85,10 +85,10 @@ class TileMap(UserDict):
         """
         if isinstance(key, tuple) and isinstance(value, TileNode):
             if (
-                key[0] > 0
-                and key[0] <= self.map_size_x
-                and key[1] > 0
-                and key[1] <= self.map_size_y
+                key[0] >= 0
+                and key[0] < self.map_size_x
+                and key[1] >= 0
+                and key[1] < self.map_size_y
             ):
                 self.data[key] = value
             else:
