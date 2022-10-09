@@ -1,4 +1,6 @@
-#!/usr/bin/env python3
+"""
+Access point for the z2p library files
+"""
 
 from .exceptions import TileMapIndexError
 from .pathprocessor import PathProcessor

@@ -108,8 +108,9 @@ def test_map_generation(z2_map_data, configuration):
     bounds_dim_y = random.randint(tile_map.map_size_y, sys.maxsize)
     bounds_location = (bounds_dim_x, bounds_dim_y)
 
-    with pytest.raises(TileMapIndexError) as tm_index_err:
-        bounds_node = tile_map[bounds_location]
+    with pytest.raises(TileMapIndexError):
+        bound_node = tile_map[bounds_location]
+        logger.info(bound_node)
 
 
 def test_graph_generation(z2_map_data, configuration):

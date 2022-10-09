@@ -4,7 +4,6 @@ Implements the floodfill and pathfinding algorithms with desired path
 combinations
 """
 
-from collections import deque
 import treelib
 
 import z2p.tilepath
@@ -52,9 +51,7 @@ class PathProcessor:
 
         return (region_keys, tile_paths)
 
-    def search_region_space(
-        self, start_node: tuple, tile_paths: list, region_keys: set
-    ):
+    def search_region_space(self, tile_paths: list, region_keys: set):
         """
         Expands on the initial collection of paths to explore all potential
         combinations possible

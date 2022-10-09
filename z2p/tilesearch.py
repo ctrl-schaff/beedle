@@ -1,5 +1,5 @@
 """
-Class for handling searching partial "chunks" of 
+Class for handling searching partial "chunks" of
 the TileMap and storing properties related to the
 subsequent search
 """
@@ -19,6 +19,15 @@ LinkMap = Mapping[TileNode, Coord]
 
 
 class PartialTileMap:
+    """
+    Represents a subset of the total TileMap explored via
+    the floodfill argument
+
+    The item_inventory and configuration determine the total
+    subset explorable by the floodfill argument based off the
+    traversal_cost requirements for the TileNodes in the TileMap
+    """
+
     def __init__(
         self, tile_map: TileMap, start_coord: Coord, item_inventory: Set[str]
     ):
@@ -52,6 +61,7 @@ class PartialTileMap:
             > discover_queue processed from the TileMap
             > link_map generated from filling the TileMap
         """
+        logger.info(f"Running floodfill algorithm @ {start_coord}")
         if item_inventory is None:
             item_inventory = set()
 
@@ -64,17 +74,16 @@ class PartialTileMap:
 
         while len(search_queue) > 0:
             search_coord = search_queue.pop()
-            logger.debug(f"Processing {search_coord}")
             discover_queue.append(search_coord)
 
             tile_node = tile_map[search_coord]
             for edge in tile_node.edges:
-                logger.debug(f"Processing {search_coord} edge {edge}")
                 if edge not in discover_queue and edge not in search_queue:
-                    tcost = set(tile_map[edge].traversal_cost)
+                    tcost = tile_map[edge].traversal_cost
                     if tcost.issubset(item_inventory):
                         search_queue.append(edge)
                         self.link_map[tile_map[edge]] = search_coord
+        logger.info(f"Generated queue of length {len(discover_queue)}")
         return discover_queue
 
     def find_new_locations(
@@ -83,7 +92,7 @@ class PartialTileMap:
         location_map: LocationMap,
         completed_locations: set,
         search_inventory: set,
-    ):
+    ) -> set:
         """
         After having performed the floodfill algorithm to complete the
         full set of discoverable TileNodes within the TileMap for this
@@ -105,12 +114,11 @@ class PartialTileMap:
             with any rewards that were discovered in the unique_location
             > Checks if the total_cost has been met by the search_inventory
             in order to mark the location as having been completed
-
         """
         discovered_locations = self.discovered_locations(location_map)
         unique_locations = discovered_locations.difference(completed_locations)
 
-        reward_map = {}
+        # reward_map = {}
         for location in unique_locations:
             unique_node = tile_map[location]
 
@@ -122,18 +130,19 @@ class PartialTileMap:
             self.reward_collection.update(reward_collection)
             self.cost_collection.update(total_cost)
 
-            reward_map[location] = location_map.location_item_lookup(
-                total_cost
-            )
+            # reward_locations = location_map.location_item_search(total_cost)
 
             if reward_cost.issubset(search_inventory):
-                for reward_item in reward_map[location].reward:
-                    search_inventory.add(reward_item)
+                search_inventory.update(reward_collection)
+                # for reward_item in reward_locations:
+                # search_inventory.add(reward_item)
+            # reward_map[location] = reward_locations
 
             if total_cost.issubset(search_inventory):
                 completed_locations.add(location)
 
         unique_locations.intersection_update(completed_locations)
+        return search_inventory
 
     def discovered_locations(self, location_map: LocationMap) -> set:
         """

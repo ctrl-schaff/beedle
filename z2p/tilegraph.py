@@ -11,10 +11,8 @@ from typing import List
 
 from loguru import logger
 
-from .pathprocessor import PathProcessor
 from .tilelocations import LocationMap
 from .tilemap import TileMap
-from .tilenode import TileNode
 from .tilesearch import PartialTileMap
 
 
@@ -54,10 +52,9 @@ class TileGraph:
         End Criteria:
             > Add the graph_end tile point to the completed_keys set
         """
-        map_chunk = self.__find_map_chunks(tile_map, location_map)
+        bottlenecks = self.__find_map_chunks(tile_map, location_map)
         self.__process_bottlenecks(bottlenecks)
-
-        return (topo_graph, map_chunk, bottlenecks)
+        # return (topo_graph, map_chunk, bottlenecks)
 
     def __find_map_chunks(
         self,
@@ -72,6 +69,7 @@ class TileGraph:
         completed or we reach the iteration limit set by the
         stage_limit value
         """
+        logger.info("Transforming TileMap {tile_map} into TileGraph")
         if stage_limit is None:
             stage_limit = 100
 
@@ -90,24 +88,26 @@ class TileGraph:
                 tile_map, self.graph_start, search_inventory
             )
 
-            ptile_map.find_new_locations(
+            updated_search_inventory = ptile_map.find_new_locations(
                 tile_map, location_map, completed_keys, search_inventory
             )
+            search_inventory.update(updated_search_inventory)
             map_chunk.append(ptile_map)
 
             if chunk_pointer:
                 item_bottleneck = set.intersection(
                     ptile_map.cost_collection, chunk_pointer.reward_collection
                 )
+                logger.info(f"Found bottleneck {item_bottleneck}")
 
-                bottleneck_coord = location_map.location_item_lookup(
+                bottleneck_coord = location_map.location_item_search(
                     item_bottleneck
                 )
                 bottlenecks[bottleneck_coord[0]] = item_bottleneck
 
             chunk_pointer = ptile_map
 
-        return map_chunk
+        return bottlenecks
 
     def __process_bottlenecks(self, bottlenecks):
         (bn_iter1, bn_iter2) = itertools.tee(bottlenecks.items(), 2)

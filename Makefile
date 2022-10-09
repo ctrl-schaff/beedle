@@ -1,5 +1,5 @@
-
 SHELL := bash
+
 .ONESHELL:
 .SHELLFLAGS := -eu -o pipefail -c 
 .DELETE_ON_ERROR:
@@ -34,13 +34,16 @@ localbuild:
 test: 
 > $(PY) -m pytest
 
-.PHONY: debugtest
-debugtest: 
-> $(PY) -m pytest --pdb -s
+.PHONY: collect_tests
+collect_tests: 
+> $(PY) -m pytest --collect-only
 
 .PHONY: lint 
 lint: 
-> $(BIN)/flake8 z2p
+> $(BIN)/pylint --exit-zero ./z2p/*.py
+> $(BIN)/flake8 --exit-zero --show-source ./z2p/*.py
+> $(BIN)/pylint --exit-zero ./test/*.py
+> $(BIN)/flake8 --exit-zero --show-source ./test/*.py
 
 .PHONY: clean
 clean:

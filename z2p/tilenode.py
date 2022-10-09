@@ -1,55 +1,58 @@
 #!/usr/bin/env python3
 
 """
-Data Structure for storing constant properties of the map tiles
-> identifier <int>
-    > ID used as value to represent the tile in map data structure
-> location <tuple>
-    > Coordinates storing the (X, Y) pair representing the map
-      location entrance
-> background <str>
-    > ID used to give basic description of what the map tile represents
-      (ie. water, mountain, grassland, etc...)
-> symbol <str>
-    > ID character representing the tile in ascii format for the
-      map data structure
-> color <str>
-    > Value to represent the tile color when plotted
-    > Typically stored in a hexadecimal format
-> description <str>
-    > Short textual description to provide any map related details
-      about the tile
-      (ie. Cave 4, Palace <Name>, Town of <Name>, etc ...)
-> traversal_cost <tuple>
-    > Collection of string values representing costs required to access
-      the tile for connected nodes.
-    > No traversal cost requirement is represented by '|'.
-    > Multiple costs may be required in which all of them must be present
-      in inventory before acquiring access
-> reward_cost <tuple>
-    > Collection of string values representing costs required to attain
-      the reward contained on the tile
-      No reward cost requirement is represented by '|'.
-      Multiple costs may be required in which all of them must be present
-      in inventory before acquring access to the reward
-> reward <tuple>
-    > Collection of string values representing the reward(s) available on
-      the designated tile
-      No reward is represented by '|'.
-      Multiple rewards may be available on the tile
-> edges <tuple>
-    > Collection of nodes that connect the current TileNode to
-      other TileNodes on the may for traversal
+Class representing the TileNode, an object instance
+stored in the TileMap object to store map specific
+data based off the configuration
 """
-
 
 import operator
 from typing import Tuple
 
-from loguru import logger
-
 
 class TileNode:
+    """
+    Data Structure for storing constant properties of the map tiles
+    > identifier <int>
+        > ID used as value to represent the tile in map data structure
+    > location <tuple>
+        > Coordinates storing the (X, Y) pair representing the map
+          location entrance
+    > background <str>
+        > ID used to give basic description of what the map tile represents
+          (ie. water, mountain, grassland, etc...)
+    > symbol <str>
+        > ID character representing the tile in ascii format for the
+          map data structure
+    > color <str>
+        > Value to represent the tile color when plotted
+        > Typically stored in a hexadecimal format
+    > description <str>
+        > Short textual description to provide any map related details
+          about the tile
+          (ie. Cave 4, Palace <Name>, Town of <Name>, etc ...)
+    > traversal_cost <tuple>
+        > Collection of string values representing costs required to access
+          the tile for connected nodes.
+        > No traversal cost requirement is represented by '|'.
+        > Multiple costs may be required in which all of them must be present
+          in inventory before acquiring access
+    > reward_cost <tuple>
+        > Collection of string values representing costs required to attain
+          the reward contained on the tile
+          No reward cost requirement is represented by '|'.
+          Multiple costs may be required in which all of them must be present
+          in inventory before acquring access to the reward
+    > reward <tuple>
+        > Collection of string values representing the reward(s) available on
+          the designated tile
+          No reward is represented by '|'.
+          Multiple rewards may be available on the tile
+    > edges <tuple>
+        > Collection of nodes that connect the current TileNode to
+          other TileNodes on the may for traversal
+    """
+
     def __init__(
         self,
         tile_location: Tuple[int, int],
@@ -62,9 +65,11 @@ class TileNode:
         self.location = tile_location
 
         self.description = location_properties.get("description", None)
-        self.traversal_cost = location_properties.get("traversal_cost", None)
-        self.reward_cost = location_properties.get("reward_cost", None)
-        self.reward = location_properties.get("reward", None)
+        self.reward_cost = location_properties.get("reward_cost", set())
+        self.reward = location_properties.get("reward", set())
+        self.traversal_cost = self.__determine_traversal_cost(
+            location_properties, tile_properties
+        )
 
         self.background = tile_properties["TYPE"]
         self.symbol = tile_properties["SYMBOL"]
@@ -104,6 +109,28 @@ class TileNode:
             "}\n"
         )
         return tile_node_str
+
+    def __determine_traversal_cost(
+        self, location_properties: dict, tile_properties: dict
+    ) -> set:
+        """
+        Determines the traversal cost of a node based off three factors:
+            > LocationMap entry for "traversal_cost"
+                > Coordinate specific traversal requirements
+            > TileProperties entry for "BASE_COST"
+                > Tile specific traversal requirements
+            > Whether the tile is walkable or not
+                > Tiles with an unwalkable traversal_cost use "unwalkable"
+                as the only entry in the "traversal_cost" field
+        """
+        traversal_cost = set()
+        traversal_cost.update(location_properties.get("traversal_cost", set()))
+        if tile_properties["WALKABLE"]:
+            base_traversal_cost = set(tile_properties["BASE_COST"])
+            traversal_cost.update(base_traversal_cost)
+        else:
+            traversal_cost.add("unwalkable")
+        return traversal_cost
 
     def __get_node_edges(
         self, map_size: Tuple[int, int], exit_edge: Tuple[int, int]

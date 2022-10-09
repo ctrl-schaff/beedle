@@ -10,6 +10,13 @@ from typing import Any
 
 
 class TileMapIndexError(KeyError):
+    """
+    Index error specifically for TileMap objects
+    If a Tuple[int, int] is passed in that is beyond
+    the bounds of the map / isn't an instance of type
+    Tuple[int, int], then this exception is raised
+    """
+
     def __init__(self, tilemap: "TileMap", key: Any, value: Any):
         message = self._format_message(tilemap, key, value)
         super().__init__(message)

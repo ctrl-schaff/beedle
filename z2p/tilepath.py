@@ -13,8 +13,8 @@ class TilePath:
     one location on the map to another
     """
 
-    def __init__(self, pathData: list, itemdata):
-        self.collection = pathData
+    def __init__(self, path_data: list, itemdata):
+        self.collection = path_data
         self.path_start = self.collection[0]
         self.path_end = self.collection[-1]
         self.itemdata = itemdata
