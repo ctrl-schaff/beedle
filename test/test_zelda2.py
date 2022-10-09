@@ -89,15 +89,22 @@ def test_map_generation(z2_map_data, configuration):
     subset_map_locations = set.difference(
         all_map_locations, location_map.entrance_locations
     )
-    random_locations = random.sample([*subset_map_locations], 5)
+    random_locations = random.sample([*subset_map_locations], 50)
     for location in random_locations:
         location_node = tile_map[location]
         assert location_node.location == location
 
         assert not location_node.description
         assert not location_node.reward
-        assert not location_node.traversal_cost
         assert not location_node.reward_cost
+
+        tile_properties = tile_data[str(location_node.identifier)]
+        if tile_properties["WALKABLE"]:
+            assert location_node.traversal_cost == set(
+                tile_properties["BASE_COST"]
+            )
+        else:
+            assert location_node.traversal_cost == set(["unwalkable"])
 
         tile_properties = tile_data[str(location_node.identifier)]
         assert location_node.background == tile_properties["TYPE"]

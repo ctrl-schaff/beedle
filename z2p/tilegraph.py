@@ -53,7 +53,7 @@ class TileGraph:
             > Add the graph_end tile point to the completed_keys set
         """
         bottlenecks = self.__find_map_chunks(tile_map, location_map)
-        self.__process_bottlenecks(bottlenecks)
+        # self.__process_bottlenecks(bottlenecks)
         # return (topo_graph, map_chunk, bottlenecks)
 
     def __find_map_chunks(
