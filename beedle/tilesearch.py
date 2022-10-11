@@ -31,9 +31,10 @@ class PartialTileMap:
     def __init__(
         self, tile_map: TileMap, start_coord: Coord, item_inventory: Set[str]
     ):
-        self.link_map = {}
         self.reward_collection = set()
         self.cost_collection = set()
+        self.search_inventory = set()
+        self.completed_locations = set()
         self.partial_map_tiles = self.floodfill(
             tile_map, start_coord, item_inventory
         )
@@ -59,19 +60,16 @@ class PartialTileMap:
 
         Returns
             > discover_queue processed from the TileMap
-            > link_map generated from filling the TileMap
         """
         logger.info(f"Running floodfill algorithm @ {start_coord}")
+
         if item_inventory is None:
             item_inventory = set()
 
         search_queue = deque()
         discover_queue = deque()
+
         search_queue.append(start_coord)
-
-        start_node = tile_map[start_coord]
-        self.link_map[start_node] = None
-
         while len(search_queue) > 0:
             search_coord = search_queue.pop()
             discover_queue.append(search_coord)
@@ -82,24 +80,23 @@ class PartialTileMap:
                     tcost = tile_map[edge].traversal_cost
                     if tcost.issubset(item_inventory):
                         search_queue.append(edge)
-                        self.link_map[tile_map[edge]] = search_coord
         logger.info(f"Generated queue of length {len(discover_queue)}")
         return discover_queue
 
-    def find_new_locations(
+    def find_completed_locations(
         self,
         tile_map: TileMap,
         location_map: LocationMap,
         completed_locations: set,
         search_inventory: set,
-    ) -> set:
+    ) -> None:
         """
         After having performed the floodfill algorithm to complete the
         full set of discoverable TileNodes within the TileMap for this
         subsection, this method finds all locations specified by the
         LocationMap
 
-        It takes then difference between those locations and the completed
+        It then takes the difference between those locations and the completed
         locations to ensure that all locations discovered are unique to this
         PartialTileMap
 
@@ -107,9 +104,7 @@ class PartialTileMap:
             > Updates the reward_collection property with all unique
             locations reward values
             > Updates the cost_collection property with all unique
-            locations reward values
-            > Builds a dictionary mapping Tuple[int, int] coordinates
-            to map items discovered as unique locations to this PartialTileMap
+            locations cost values
             > Checks if the reward_cost is met to update the search_inventory
             with any rewards that were discovered in the unique_location
             > Checks if the total_cost has been met by the search_inventory
@@ -118,7 +113,6 @@ class PartialTileMap:
         discovered_locations = self.discovered_locations(location_map)
         unique_locations = discovered_locations.difference(completed_locations)
 
-        # reward_map = {}
         for location in unique_locations:
             unique_node = tile_map[location]
 
@@ -130,24 +124,16 @@ class PartialTileMap:
             self.reward_collection.update(reward_collection)
             self.cost_collection.update(total_cost)
 
-            # reward_locations = location_map.location_item_search(total_cost)
-
             if reward_cost.issubset(search_inventory):
-                search_inventory.update(reward_collection)
-                # for reward_item in reward_locations:
-                # search_inventory.add(reward_item)
-            # reward_map[location] = reward_locations
+                self.search_inventory.update(reward_collection)
 
             if total_cost.issubset(search_inventory):
-                completed_locations.add(location)
-
-        unique_locations.intersection_update(completed_locations)
-        return search_inventory
+                self.completed_locations.add(location)
 
     def discovered_locations(self, location_map: LocationMap) -> set:
         """
         Compares the discovered tiles against the full set
-            of key locations and returns the intersection
+        of key locations and returns the intersection
         """
         full_location_set = location_map.entrance_locations
         partial_set = set(self.partial_map_tiles)

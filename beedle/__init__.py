@@ -1,5 +1,5 @@
 """
-Access point for the z2p library files
+Access point for the beedle library
 """
 
 from .exceptions import TileMapIndexError

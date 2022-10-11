@@ -118,16 +118,75 @@ class LocationMap(UserDict):
             }
         return self.__entrance_locations
 
-    def location_item_search(self, item_collection: set) -> tuple:
+    def location_reward_search(self, item: str) -> Tuple[int, int]:
         """
-        Provided an item value to search, will iterate over the
-        stored location coordinates and return a tuple collection of
-        the tile coordinates if the item is stored within the locations
-        reward
+        Given an item value to search with in the LocationMap dictionary,
+        will iterate over all stored locations and return list collection
+        of coordinates that match having the specified item as a reward
+
+        Specific to the reward property, this should be unique to one specific
+        location as multiple of the same reward cannot exist within the logic
+        of the map configuration, so this method always returns a single value
         """
-        tile_data = []
-        for item_value in item_collection:
+        reward_origin_locations = self.__property_search("reward", item)
+        if reward_origin_locations:
+            reward_origin_locations = reward_origin_locations[0]
+        return reward_origin_locations
+
+    def location_cost_search(self, item: str) -> Tuple[int, int]:
+        """
+        Given an item value to search with in the LocationMap dictionary,
+        will iterate over all stored locations and return list collection
+        of coordinates that match having the specified item as a
+        reward_cost or a traversal_cost
+        """
+        cost_origin_locations = self.__property_search("reward_cost", item)
+        cost_origin_locations.extend(
+            self.__property_search("traversal_cost", item)
+        )
+        return cost_origin_locations
+
+    def location_reward_cost_search(self, item: str) -> List[Tuple[int, int]]:
+        """
+        Given an item value to search with in the LocationMap dictionary,
+        will iterate over all stored locations and return list collection
+        of coordinates that match having the specified item as a reward_cost
+        """
+        reward_cost_origin_locations = self.__property_search(
+            "reward_cost", item
+        )
+        return reward_cost_origin_locations
+
+    def location_traversal_cost_search(
+        self, item: str
+    ) -> List[Tuple[int, int]]:
+        """
+        Given an item value to search within the LocationMap dictionary,
+        will iterate over all stored locations and return a list collection
+        of coordinates that match having the specified item as a traversal_cost
+        """
+        traversal_cost_origin_locations = self.__property_search(
+            "traversal_cost", item
+        )
+        return traversal_cost_origin_locations
+
+    def __property_search(
+        self, property_name: str, item: str
+    ) -> List[Tuple[int, int]]:
+        """
+        Base method for searching through the location properties stored
+        as keys to the LocationMap underlying dict
+
+        Returns all coordinates that matched in a list collection
+        """
+        found_locations = []
+        if property_name in self.data.keys():
             for location_coordinates, location_properties in self.data.items():
-                if item_value in location_properties["reward"]:
-                    tile_data.append(location_coordinates)
-        return tuple(tile_data)
+                if item in location_properties[property_name]:
+                    found_locations.append(location_coordinates)
+        else:
+            logger.info(
+                f"Undefined {{{property_name}}} key for {{{item}}} @ {self}"
+            )
+
+        return found_locations

@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 
-import functools
-import json
 import itertools
+import json
 import os
 import pathlib
-import time
-from typing import Any, Callable, Iterable
+import shutil
+from typing import Any, Iterable
 
 import dotenv
 import numpy as np
@@ -21,10 +20,8 @@ def z2_map_data(romfile) -> np.array:
       quadrants of the actual map area
     """
 
-    SUB_MAP_SIZE_X = 75
-    SUB_MAP_SIZE_Y = 65
-    MAP_SIZE_X = 2 * SUB_MAP_SIZE_X
-    MAP_SIZE_Y = 2 * SUB_MAP_SIZE_Y
+    half_map_size_x_dimension = 75
+    half_map_size_y_dimension = 65
 
     map_boundary = {
         "WEST_HYRULE": (int("506C", 16), int("538C", 16)),
@@ -33,7 +30,10 @@ def z2_map_data(romfile) -> np.array:
         "MAZE_ISLAND": (int("A65C", 16), int("A942", 16)),
     }
 
-    map_data = np.zeros([2 * SUB_MAP_SIZE_X, 2 * SUB_MAP_SIZE_Y], dtype=int)
+    map_data = np.zeros(
+        [2 * half_map_size_x_dimension, 2 * half_map_size_y_dimension],
+        dtype=int,
+    )
 
     rompath = pathlib.Path(romfile).resolve()
     assert rompath.exists()
@@ -51,12 +51,19 @@ def z2_map_data(romfile) -> np.array:
                 sub_map += (int(byte[0], 16) + 1) * [int(byte[1], 16)]
 
             # Vertical water barrier to separate sub maps
-            water_range = range(SUB_MAP_SIZE_Y, len(sub_map), SUB_MAP_SIZE_Y)
+            water_range = range(
+                half_map_size_y_dimension,
+                len(sub_map),
+                half_map_size_y_dimension,
+            )
             for index in water_range:
                 sub_map.insert(index - 1, 12)
 
             sub_map_data.append(
-                np.resize(np.array(sub_map), (SUB_MAP_SIZE_X, SUB_MAP_SIZE_Y))
+                np.resize(
+                    np.array(sub_map),
+                    (half_map_size_x_dimension, half_map_size_y_dimension),
+                )
             )
 
     # Cleanup the Death Mountain and Maze Island Segments
@@ -76,8 +83,6 @@ def z2_map_data(romfile) -> np.array:
     # Transpose the map to ensure you can index with
     # (X, Y) rather than (Y, X)
     map_data = map_data.T
-    (MAP_SIZE_X, MAP_SIZE_Y) = map_data.shape
-
     yield map_data
 
 
@@ -92,16 +97,46 @@ def romfile() -> pathlib.Path:
 
 
 @pytest.fixture
-def configuration() -> dict:
+def configuration(build_test_structure) -> dict:
     """
     Fixture for loading the zelda 2 config file
     provided in the pytest.ini [env] section
     """
-    env_variable_name = "CONFIG_PATH"
-    config_path = load_environment_variable(env_variable_name)
-    with open(config_path, "r", encoding="utf-8") as config_handle:
-        config_data = json.load(config_handle)
-    yield config_data
+    config_name = "zelda2.json"
+    config_path = (build_test_structure / config_name).resolve().absolute()
+    if config_path.exists():
+        with open(config_path, "r", encoding="utf-8") as config_handle:
+            config_data = json.load(config_handle)
+        yield config_data
+    else:
+        raise FileNotFoundError(f"Unable to load {config_path}")
+
+
+@pytest.fixture(scope="module")
+def build_test_structure(tmp_path_factory, request):
+    """
+    Builds a module level test structure to avoid potentially modifying
+    repository test data
+
+    > searches for a folder with the same name as the test module
+    > if available, moves all contests to a temporary directory
+    > yields this test directory with newly copied data
+    > upon completion of the module level tests, removes this test directory
+    """
+    module_name = request.node.name
+    module_path = pathlib.Path(module_name).resolve().absolute()
+    data_directory = module_path.with_name(module_path.stem)
+
+    temp_directory_name = "merchant"
+    temp_directory = tmp_path_factory.mktemp(temp_directory_name)
+    if data_directory.is_dir():
+        shutil.copytree(
+            src=str(data_directory),
+            dst=str(temp_directory),
+            dirs_exist_ok=True,
+        )
+    yield temp_directory
+    shutil.rmtree(str(temp_directory.parent))
 
 
 def load_environment_variable(env_variable_name: str) -> pathlib.Path:
@@ -119,13 +154,13 @@ def load_environment_variable(env_variable_name: str) -> pathlib.Path:
     resolve_path = pathlib.Path(path_env).resolve()
     if resolve_path.exists():
         return resolve_path
-    else:
-        path_err_msg = (
-            "Unable to resolve environment variable path: "
-            f"{str(path_env)}\n"
-            f"Check pytest.ini for {env_variable_name}"
-        )
-        raise FileNotFoundError(path_err_msg)
+
+    path_err_msg = (
+        "Unable to resolve environment variable path: "
+        f"{str(path_env)}\n"
+        f"Check pytest.ini for {env_variable_name}"
+    )
+    raise FileNotFoundError(path_err_msg)
 
 
 def chunker(
@@ -136,15 +171,3 @@ def chunker(
     """
     args = [iter(iterable)] * length
     return itertools.zip_longest(*args, fillvalue=fillvalue)
-
-
-def measure(func: Callable):
-    @functools.wraps(func)
-    def _time_it(*args, **kwargs):
-        start = int(round(time.time() * 1000))
-        try:
-            return func(*args, **kwargs)
-        finally:
-            end_ = int(round(time.time() * 1000)) - start
-            print(f"Test | {func.__name__}")
-            print(f"Total execution time: {end_ if end_ > 0 else 0} ms")

@@ -2,7 +2,7 @@
 
 """
 Test examples using zelda 2 as the data source
-for the z2p library
+for the beedle library
 """
 
 import pprint
@@ -12,7 +12,7 @@ import sys
 from loguru import logger
 import pytest
 
-from z2p import TileGraph, LocationMap, TileMap, TileMapIndexError
+from beedle import TileGraph, LocationMap, TileMap, TileMapIndexError
 
 
 def test_location_map(configuration):
@@ -48,7 +48,12 @@ def test_location_map(configuration):
         item_bag.update(entrance_properties["traversal_cost"])
 
     random_item_subset = set(random.sample([*item_bag], 3))
-    item_locations = location_map.location_item_search(random_item_subset)
+
+    item_locations = []
+    for item in random_item_subset:
+        item_locations.extend(location_map.location_cost_search(item))
+        item_locations.extend(location_map.location_reward_search(item))
+
     for location in item_locations:
         location_properties = location_map[location]
         found_reward = location_properties["reward"]

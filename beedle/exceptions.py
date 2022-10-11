@@ -1,5 +1,5 @@
 """
-Module for all custom exceptions within the z2p module
+Module for all custom exceptions within the beedle library
 """
 
 from __future__ import annotations
