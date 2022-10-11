@@ -12,19 +12,24 @@ ifeq ($(origin .RECIPEPREFIX), undefined)
 endif
 .RECIPEPREFIX = >
 
+# Directory Structure
+PROJECT_NAME = beedle
+REQUIREMENTS = requirements.txt
+TEST_DIRECTORY = test
+
+
 # Virtual Environment
 PY = python3
 BIN = bin
 
 # Requirements
 REQ_DIR = req
-REQ=$(REQ_DIR)/requirements.txt
 
 all: install lint test
 
 .PHONY: install
 install:
-> $(BIN)/pip install --upgrade -r $(REQ)
+> $(BIN)/pip install -I -r $(REQUIREMENTS)
 
 .PHONY: localbuild
 localbuild:
@@ -40,10 +45,10 @@ collect_tests:
 
 .PHONY: lint 
 lint: 
-> $(BIN)/pylint --exit-zero ./z2p/*.py
-> $(BIN)/flake8 --exit-zero --show-source ./z2p/*.py
-> $(BIN)/pylint --exit-zero ./test/*.py
-> $(BIN)/flake8 --exit-zero --show-source ./test/*.py
+> $(BIN)/pylint --exit-zero --jobs 0 --recursive true $(PROJECT_NAME)
+> $(BIN)/flake8 --exit-zero --show-source --statistics --benchmark $(PROJECT_NAME)
+> $(BIN)/pylint --exit-zero --jobs 0 --recursive true $(TEST_DIRECTORY)
+> $(BIN)/flake8 --exit-zero --show-source --statistics --benchmark $(TEST_DIRECTORY)
 
 .PHONY: clean
 clean:

@@ -3,12 +3,12 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "z2p_schaffjr"
+name = "beedle"
 version = "0.0.1"
 authors = [
   { name="Johnathan Schaff", email="schaffjohnathan@gmail.com" },
 ]
-description = "path generation library"
+description = "Map to Graph translation library"
 readme = "README.md"
 license = { file="LICENSE" }
 requires-python = ">=3.7"
@@ -21,6 +21,48 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/pypa/z2p"
-"Bug Tracker" = "https://github.com/pypa/z2p/issues"
+"Homepage" = "https://github.com/ctrl-schaff/beedle"
+"Bug Tracker" = "https://github.com/ctrl-schaff/beedle/issues"
 
+# pytest configuration
+[tool.pytest.ini_options]
+minversion = "6.2.5"
+
+# Options
+addopts = [
+    "--doctest-modules",
+    "-ra",
+    "-vv",
+    "-s",
+    "--durations=0",
+    "--showlocals"
+]
+
+# Path
+norecursedirs = [
+    ".svn",
+    ".git",
+    "_build",
+    "tmp*",
+    "lib", 
+    "lib64"
+]
+testpaths = [
+    "test"
+]
+
+# Environment
+env = [
+    "ROM_PATH = config/zelda2.nes"
+]
+
+# Logging
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s %(levelname)s %(message)s"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+
+log_file = "logs/pytest.log"
+log_file_level = "DEBUG"
+log_file_format = "%(asctime)s %(levelname)s %(message)s"
+log_file_date_format = "%Y-%m-%d %H:%M:%S"

@@ -1,8 +1,10 @@
-# Z2P [Zelda 2 Pathing]
-Attempts to find all possible paths to go from the starting location to the ending location
-following the game logic
+## beedle 
+Python3 library for translating a 2D map into a bidirectional graph
+while also topologically sorting based off the 2D map configuration logic
 
-# File Formats & Data 
+
+## Example [Zelda 2]
+## File Formats & Data 
 ID     | SYMBOL | BACKGROUND | COLOR (HEX) |
 ------ | ------ | ---------- | ----------- |
 00     | T      | Town       | #747474     |
@@ -21,8 +23,6 @@ ID     | SYMBOL | BACKGROUND | COLOR (HEX) |
 13     | W      | Water(Walk)| #85d5f2     |
 14     | O      | Boulder    | #dc7e43     |
 15     | A      | Monster    | #03daf4     |
-16     | *      | FILL       | #ccfdff     |
-17     | ^      | PATH       | #f31616     |
 
 # Sources 
 * [Zelda2MapEdit](https://github.com/matal3a0/Zelda2MapEdit)
@@ -47,3 +47,22 @@ ID     | SYMBOL | BACKGROUND | COLOR (HEX) |
     * [Moviepy demo](https://zulko.github.io/blog/2014/11/29/data-animations-with-python-and-moviepy/)
 * Pathfinding
     * [redblobgames](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
+
+### maplogic
+Class for containing the logic related to the map data. Logic in this case refers to specific things
+about map that cannot be obtained from a simple (X,Y) coordinate static map. Also not every tile on
+a map requires additional logic for understanding how to parse the node, so the logic file only
+contains those tiles which require additional information to process appropriately. 
+    > Traversal Cost
+        Required cost in order to actually walk on the tile. At the moment, this only uses items as
+        requirements as the item special effect is likely required in order to connect to a specific
+        edge that this tile connects with
+    > Reward Cost
+        Required cost in order to receive a reward on this tile. At the moment, this only uses items
+        as requirements as the item special effect is likely required in order to obtain the reward 
+    > Reward
+        Item list received if the reward cost is met
+    > Entrace & Exit Coordinatesa
+        If a tile connects to a non-adjecent node, then this entrance & exit coordinates specify
+        this non-obvious connection
+
