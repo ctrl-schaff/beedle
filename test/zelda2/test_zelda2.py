@@ -47,17 +47,31 @@ def test_location_map(configuration):
         item_bag.update(entrance_properties["reward_cost"])
         item_bag.update(entrance_properties["traversal_cost"])
 
-    random_item_subset = set(random.sample([*item_bag], 3))
+    property_map = {
+        "reward": location_map.location_reward_search,
+        "reward_cost": location_map.location_reward_cost_search,
+        "traversal_cost": location_map.location_traversal_cost_search,
+    }
 
-    item_locations = []
-    for item in random_item_subset:
-        item_locations.extend(location_map.location_cost_search(item))
-        item_locations.extend(location_map.location_reward_search(item))
+    for property_name, property_lookup in property_map.items():
+        random_item_subset = set(random.sample([*item_bag], 3))
 
-    for location in item_locations:
-        location_properties = location_map[location]
-        found_reward = location_properties["reward"]
-        assert found_reward.intersection(random_item_subset)
+        item_locations = []
+        for item in random_item_subset:
+            item_lookup_result = property_lookup(item)
+            if isinstance(item_lookup_result, list):
+                item_locations.extend(item_lookup_result)
+            else:
+                item_locations.append(item_lookup_result)
+
+        for location in item_locations:
+            location_properties = location_map[location]
+            found_reward = location_properties.get(property_name, None)
+            assert found_reward.intersection(random_item_subset)
+
+        logger.info(
+            f"Successful {property_name} lookup {property_lookup.__func__}"
+        )
 
 
 def test_map_generation(z2_map_data, configuration):
@@ -142,3 +156,4 @@ def test_graph_generation(z2_map_data, configuration):
     graph_end = (69, 43)
 
     graph_obj = TileGraph(graph_start, graph_end, tile_map, location_map)
+    graph_obj.topological_sort(location_map)

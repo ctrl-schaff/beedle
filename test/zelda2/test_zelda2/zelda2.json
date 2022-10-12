@@ -1358,16 +1358,15 @@
         69,
         43
       ],
-      "traversal_cost": [
+      "traversal_cost": [],
+      "reward_cost": [
+        "Thunder",
         "Crystal1",
         "Crystal2",
         "Crystal3",
         "Crystal4",
         "Crystal5",
         "Crystal6"
-      ],
-      "reward_cost": [
-        "Thunder"
       ],
       "reward": [
         "Triforce"

@@ -118,11 +118,38 @@ class LocationMap(UserDict):
             }
         return self.__entrance_locations
 
+    def location_search(self, item: str) -> List[Tuple[int, int]]:
+        """
+        Given an item value to search with in the LocationMap dictionary,
+        will iterate over all stored locations and return list collection
+        of coordinates that match having the specified item as a
+            > {reward, reward_cost, traversal_cost}
+
+        Specific to the reward property, this should be unique to one specific
+        location as multiple of the same reward cannot exist within the logic
+        of the map configuration, so this method always returns a single value
+        """
+        origin_locations = self.location_cost_search(item)
+        origin_locations.append(self.location_reward_search(item))
+        return origin_locations
+
+    def location_cost_search(self, item: str) -> List[Tuple[int, int]]:
+        """
+        Given an item value to search with in the LocationMap dictionary,
+        will iterate over all stored locations and return list collection
+        of coordinates that match having the specified item as a
+            > {reward_cost, traversal_cost}
+        """
+        cost_origin_locations = self.location_reward_cost_search(item)
+        cost_origin_locations.extend(self.location_traversal_cost_search(item))
+        return cost_origin_locations
+
     def location_reward_search(self, item: str) -> Tuple[int, int]:
         """
         Given an item value to search with in the LocationMap dictionary,
         will iterate over all stored locations and return list collection
-        of coordinates that match having the specified item as a reward
+        of coordinates that match having the specified item as a
+            > {reward}
 
         Specific to the reward property, this should be unique to one specific
         location as multiple of the same reward cannot exist within the logic
@@ -133,24 +160,12 @@ class LocationMap(UserDict):
             reward_origin_locations = reward_origin_locations[0]
         return reward_origin_locations
 
-    def location_cost_search(self, item: str) -> Tuple[int, int]:
-        """
-        Given an item value to search with in the LocationMap dictionary,
-        will iterate over all stored locations and return list collection
-        of coordinates that match having the specified item as a
-        reward_cost or a traversal_cost
-        """
-        cost_origin_locations = self.__property_search("reward_cost", item)
-        cost_origin_locations.extend(
-            self.__property_search("traversal_cost", item)
-        )
-        return cost_origin_locations
-
     def location_reward_cost_search(self, item: str) -> List[Tuple[int, int]]:
         """
         Given an item value to search with in the LocationMap dictionary,
         will iterate over all stored locations and return list collection
-        of coordinates that match having the specified item as a reward_cost
+        of coordinates that match having the specified item as a
+            > {reward_cost}
         """
         reward_cost_origin_locations = self.__property_search(
             "reward_cost", item
@@ -163,7 +178,8 @@ class LocationMap(UserDict):
         """
         Given an item value to search within the LocationMap dictionary,
         will iterate over all stored locations and return a list collection
-        of coordinates that match having the specified item as a traversal_cost
+        of coordinates that match having the specified item as a
+            > {traversal_cost}
         """
         traversal_cost_origin_locations = self.__property_search(
             "traversal_cost", item
@@ -180,13 +196,7 @@ class LocationMap(UserDict):
         Returns all coordinates that matched in a list collection
         """
         found_locations = []
-        if property_name in self.data.keys():
-            for location_coordinates, location_properties in self.data.items():
-                if item in location_properties[property_name]:
-                    found_locations.append(location_coordinates)
-        else:
-            logger.info(
-                f"Undefined {{{property_name}}} key for {{{item}}} @ {self}"
-            )
-
+        for location_coordinates, location_properties in self.data.items():
+            if item in location_properties.get(property_name, []):
+                found_locations.append(location_coordinates)
         return found_locations

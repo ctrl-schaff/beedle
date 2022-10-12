@@ -6,8 +6,9 @@ map data with tile information
     - TileGraph stores a collection of TileData objects
 """
 
+from collections import OrderedDict
 import itertools
-from typing import Set, Tuple
+from typing import List, Set, Tuple
 
 from loguru import logger
 
@@ -30,7 +31,8 @@ class TileGraph:
     ):
         self.graph_start = graph_start
         self.graph_end = graph_end
-        self._tile_graph = self.__translate_map_data(tile_map, location_map)
+        self._tile_graph = {}
+        self.bottlenecks = self.__translate_map_data(tile_map, location_map)
 
     def __translate_map_data(
         self, tile_map: TileMap, location_map: LocationMap
@@ -60,12 +62,13 @@ class TileGraph:
         stage_limit value
         """
         logger.info("Transforming TileMap {tile_map} into TileGraph")
-        tilegraph = {}
+
+        bottlenecks = OrderedDict()
+
         global_completed_locations = set()
         global_item_inventory = set()
 
         previous_partial_tile_map = None
-
         chunk_count = 0
         while self.graph_end not in global_completed_locations:
             logger.info(f"Graph Search Chunk #{chunk_count}")
@@ -79,23 +82,22 @@ class TileGraph:
             )
 
             for location in partial_tile_map.completed_locations:
-                if not tilegraph.get(location, None):
-                    tilegraph[location] = set()
+                self.add_node(location)
 
             node_vertices = itertools.permutations(
                 partial_tile_map.completed_locations, 2
             )
             for vertex in node_vertices:
-                tilegraph[vertex[0]].add(vertex[1])
+                self.update_node_edge(vertex[0], vertex[1])
 
-            self.__find_bottleneck(
+            bottleneck_subset = self.__find_bottleneck(
                 partial_tile_map,
                 previous_partial_tile_map,
                 location_map,
-                tilegraph,
             )
+            bottlenecks.update(bottleneck_subset)
             previous_partial_tile_map = partial_tile_map
-        return tilegraph
+        return bottlenecks
 
     def __create_partial_map(
         self,
@@ -129,8 +131,7 @@ class TileGraph:
         current_partial_map: PartialTileMap,
         prev_partial_map: PartialTileMap,
         location_map: LocationMap,
-        tilegraph: dict,
-    ):
+    ) -> dict:
         """
         Compares two sequentially created PartialTileMap(s) and compares the
         stored cost items found from the current PartialTileMap with the stored
@@ -140,7 +141,13 @@ class TileGraph:
 
         These items and locations need to be joined across PartialTileMaps
         on the graph to ensure that logically connected locations share an edge
+
+        It also stores the bottleneck as a dictionary with the
+        following key-value pair structure
+            > key: reward_location Tuple[int, int]
+            > value: cost_location Set[Tuple[int, int]]
         """
+        bottleneck_subset = {}
         if prev_partial_map:
             item_bottleneck = set.intersection(
                 current_partial_map.cost_collection,
@@ -149,13 +156,73 @@ class TileGraph:
             logger.info(f"Found item bottleneck {item_bottleneck}")
 
             for item in item_bottleneck:
-                bottleneck_locations = []
-                bottleneck_locations.extend(
-                    location_map.location_reward_search(item)
-                )
-                bottleneck_locations.extend(
-                    location_map.location_cost_search(item)
-                )
+                reward_location = location_map.location_reward_search(item)
+                cost_location = location_map.location_cost_search(item)
+                bottleneck_subset[reward_location] = set(cost_location)
+
+                bottleneck_locations = location_map.location_search(item)
                 node_vertices = itertools.permutations(bottleneck_locations, 2)
                 for vertex in node_vertices:
-                    tilegraph[vertex[0]].add(vertex[1])
+                    self.update_node_edge(vertex[0], vertex[1])
+        return bottleneck_subset
+
+    def add_node(self, node: Tuple[int, int]) -> None:
+        """
+        Attempts to add a new node to the graph
+        If the node already exists, then no action is performed
+        """
+        if node not in self._tile_graph:
+            self._tile_graph[node] = set()
+            logger.info(f"Added new node {node} to graph")
+        else:
+            logger.info(
+                f"Node {node} -> {self._tile_graph[node]} exists in graph"
+            )
+
+    def update_node_edge(
+        self, node: Tuple[int, int], connected_node: Tuple[int, int]
+    ) -> None:
+        """
+        Attempts to create an edge on the graph by adding connecting two nodes
+        together (represented by adding the node to the dictionary value set
+
+        If the node doesn't exist, then we create the node by adding the edge
+        """
+        if node not in self._tile_graph:
+            self.add_node(node)
+
+        self._tile_graph[node].add(connected_node)
+        logger.info(f"Update node {node} -> {self._tile_graph[node]}")
+
+    def get_node(self, node: Tuple[int, int]) -> Set[Tuple[int, int]]:
+        """
+        Attempts to access the a node in the graph based off the key
+        value Tuple[int, int] and returns the connected nodes
+        """
+        connected_nodes = None
+        if node not in self._tile_graph:
+            logger.info(f"Unable to find node {node} in the graph")
+            connected_nodes = set()
+        else:
+            connected_nodes = self._tile_graph[node]
+            logger.info(f"Found connected nodes {node} -> {connected_nodes}")
+        return connected_nodes
+
+    def topological_sort(
+        self, location_map: LocationMap
+    ) -> List[Tuple[int, int]]:
+        """
+        Returns a topological sorted list of locations to fully
+        process the 2D map in logical order
+        """
+        starting_connection = {self.graph_start: None}
+        topo_sort = [starting_connection]
+        for reward_location, cost_locations in self.bottlenecks.items():
+            logger.info(f"Graph Sort Length #{len(topo_sort)}")
+            logger.info(
+                f"Current node {reward_location}\n{location_map[reward_location]}"
+            )
+            connection = {reward_location: cost_locations}
+            topo_sort.append(connection)
+        logger.info(topo_sort)
+        return topo_sort
