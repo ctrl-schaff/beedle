@@ -4,9 +4,10 @@ Module for all custom exceptions within the beedle library
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
-# from .tilemap import TileMap
+if TYPE_CHECKING:
+    from .tilemap import TileMap
 
 
 class TileMapIndexError(KeyError):
@@ -17,11 +18,11 @@ class TileMapIndexError(KeyError):
     Tuple[int, int], then this exception is raised
     """
 
-    def __init__(self, tilemap: "TileMap", key: Any, value: Any):
+    def __init__(self, tilemap: TileMap, key: Any, value: Any):
         message = self._format_message(tilemap, key, value)
         super().__init__(message)
 
-    def _format_message(self, tilemap: "TileMap", key: Any, value: Any) -> str:
+    def _format_message(self, tilemap: TileMap, key: Any, value: Any) -> str:
         """
         Formats the KeyError message based off the size of tilemap
         and the provided key-value pair provided
