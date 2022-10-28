@@ -6,9 +6,10 @@ map data with tile information
     - TileGraph stores a collection of TileData objects
 """
 
-from collections import OrderedDict
+from collections import OrderedDict, deque
 import itertools
-from typing import List, Set, Tuple
+import operator
+from typing import List, Mapping, Set, Tuple
 
 from loguru import logger
 
@@ -31,7 +32,10 @@ class TileGraph:
     ):
         self.graph_start = graph_start
         self.graph_end = graph_end
+        self.bottlenecks = {}
+
         self._tile_graph = {}
+        self.location_order = []
         self.bottlenecks = self.__translate_map_data(tile_map, location_map)
 
     def __translate_map_data(
@@ -81,6 +85,7 @@ class TileGraph:
                 global_completed_locations,
             )
 
+            self.location_order.append(partial_tile_map.completed_locations)
             for location in partial_tile_map.completed_locations:
                 self.add_node(location)
 
@@ -166,6 +171,19 @@ class TileGraph:
                     self.update_node_edge(vertex[0], vertex[1])
         return bottleneck_subset
 
+    @property
+    def graph_data(self) -> Mapping[Tuple[int, int], Set[Tuple[int, int]]]:
+        """
+        Accessor property method for getting the underlying graph data
+        represented as a dictionary with key-value pairing stored as:
+        > key -> Tuple[int, int]
+        > value -> Set[Tuple[int, int]]
+        If nothing has been populated then the empty set is returned
+        """
+        if not self._tile_graph:
+            logger.warning(f"Empty graph stored by {self}")
+        return self._tile_graph
+
     def add_node(self, node: Tuple[int, int]) -> None:
         """
         Attempts to add a new node to the graph
@@ -208,21 +226,69 @@ class TileGraph:
             logger.info(f"Found connected nodes {node} -> {connected_nodes}")
         return connected_nodes
 
-    def topological_sort(
+    def generate_graph_bottlenecks(
         self, location_map: LocationMap
     ) -> List[Tuple[int, int]]:
         """
-        Returns a topological sorted list of locations to fully
-        process the 2D map in logical order
+        Takes the found bottlnecks and returns a subset of the graph for
+        highlighting where the barriers between exploration points with
+        the graph exist
         """
         starting_connection = {self.graph_start: None}
-        topo_sort = [starting_connection]
+        bottleneck = [starting_connection]
         for reward_location, cost_locations in self.bottlenecks.items():
-            logger.info(f"Graph Sort Length #{len(topo_sort)}")
-            logger.info(
-                f"Current node {reward_location}\n{location_map[reward_location]}"
-            )
+            logger.info(f"Bottleneck subset length #{len(bottleneck)}")
+            logger.info((
+                f"Current node {reward_location}\n"
+                f"{location_map[reward_location]}"
+            ))
             connection = {reward_location: cost_locations}
-            topo_sort.append(connection)
-        logger.info(topo_sort)
-        return topo_sort
+            bottleneck.append(connection)
+        logger.info(bottleneck)
+        return bottleneck
+
+    def topological_sort(self, tile_map: TileMap, location_map: LocationMap):
+        """
+        Topological sort from the graph-end to graph-start
+        """
+        logger.info("Generating topological graph")
+        visited_locations = set()
+        search_locations = deque()
+        topological_graph = {}
+
+        current_node = self.graph_end
+        while current_node:
+            logger.info(f"Processing graph location {current_node}")
+            visited_locations.add(current_node)
+            topological_graph[current_node] = set()
+
+            current_tile = tile_map[current_node]
+            current_costs = set()
+            current_costs = current_costs.union(current_tile.reward_cost)
+            current_costs = current_costs.union(current_tile.traversal_cost)
+
+            for cost_item in current_costs:
+                required_location = location_map.location_reward_search(
+                    cost_item
+                )
+                topological_graph[current_node].add(required_location)
+                if required_location not in visited_locations:
+                    search_locations.append(required_location)
+
+            try:
+                current_node = search_locations.pop()
+            except IndexError:
+                current_node = None
+
+        topological_order = []
+        for graph_location in topological_graph:
+            for completion_index, completion_group in enumerate(
+                self.location_order
+            ):
+                if graph_location in completion_group:
+                    topological_order.append(
+                        (completion_index, graph_location)
+                    )
+        topological_order.sort(key=operator.itemgetter(0))
+        logger.debug(f"Output topological order {topological_order}")
+        return topological_order, topological_graph

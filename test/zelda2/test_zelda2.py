@@ -154,6 +154,9 @@ def test_graph_generation(z2_map_data, configuration):
 
     graph_start = (23, 22)
     graph_end = (69, 43)
-
-    graph_obj = TileGraph(graph_start, graph_end, tile_map, location_map)
-    graph_obj.topological_sort(location_map)
+    graph_obj = TileGraph(
+        graph_start, graph_end, tile_map, location_map
+    )
+    topological_order, topological_graph = graph_obj.topological_sort(
+        tile_map, location_map
+    )

@@ -37,7 +37,11 @@ addopts = [
     "--capture=tee-sys",
     "--tb=line",
     "--durations=0",
-    "--showlocals"
+    "--showlocals",
+    "--strict-markers",
+    "--color=yes",
+    "--code-highlight=yes",
+    "--debug"
 ]
 
 # Path
@@ -47,7 +51,8 @@ norecursedirs = [
     "_build",
     "tmp*",
     "lib", 
-    "lib64"
+    "lib64",
+    "tools"
 ]
 testpaths = [
     "test"

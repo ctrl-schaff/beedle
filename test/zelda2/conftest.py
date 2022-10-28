@@ -8,8 +8,18 @@ import shutil
 from typing import Any, Iterable
 
 import dotenv
+from loguru import logger
 import numpy as np
 import pytest
+
+from _pytest.logging import LogCaptureFixture
+
+
+@pytest.fixture
+def caplog(caplog: LogCaptureFixture):
+    handler_id = logger.add(caplog.handler, format="{message}")
+    yield caplog
+    logger.remove(handler_id)
 
 
 @pytest.fixture()
