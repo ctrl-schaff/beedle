@@ -1,1441 +1,1447 @@
 {
-  "tiles": {
-    "0": {
-      "TYPE": "Town",
-      "SYMBOL": "T",
-      "BASE_COST": [],
-      "WALKABLE": true,
-      "COLOR": "#747474"
-    },
-    "1": {
-      "TYPE": "Cave",
-      "SYMBOL": "C",
-      "BASE_COST": [],
-      "WALKABLE": true,
-      "COLOR": "#000000"
-    },
-    "2": {
-      "TYPE": "Palace",
-      "SYMBOL": "P",
-      "BASE_COST": [],
-      "WALKABLE": true,
-      "COLOR": "#efefef"
-    },
-    "3": {
-      "TYPE": "Bridge",
-      "SYMBOL": "B",
-      "BASE_COST": [],
-      "WALKABLE": true,
-      "COLOR": "#f0bc3c"
-    },
-    "4": {
-      "TYPE": "Desert",
-      "SYMBOL": "D",
-      "BASE_COST": [],
-      "WALKABLE": true,
-      "COLOR": "#fabcb0"
-    },
-    "5": {
-      "TYPE": "Grassland",
-      "SYMBOL": "G",
-      "BASE_COST": [],
-      "WALKABLE": true,
-      "COLOR": "#80D010"
-    },
-    "6": {
-      "TYPE": "Forest",
-      "SYMBOL": "F",
-      "BASE_COST": [],
-      "WALKABLE": true,
-      "COLOR": "#009400"
-    },
-    "7": {
-      "TYPE": "Swamp",
-      "SYMBOL": "S",
-      "BASE_COST": [],
-      "WALKABLE": true,
-      "COLOR": "#386138"
-    },
-    "8": {
-      "TYPE": "Graveyard",
-      "SYMBOL": "Y",
-      "BASE_COST": [],
-      "WALKABLE": true,
-      "COLOR": "#fcfcfc"
-    },
-    "9": {
-      "TYPE": "Road",
-      "SYMBOL": "R",
-      "BASE_COST": [],
-      "WALKABLE": true,
-      "COLOR": "#ffbc3c"
-    },
-    "10": {
-      "TYPE": "Volcanic",
-      "SYMBOL": "V",
-      "BASE_COST": [],
-      "WALKABLE": true,
-      "COLOR": "#c84c0c"
-    },
-    "11": {
-      "TYPE": "Mountain",
-      "SYMBOL": "M",
-      "BASE_COST": [],
-      "WALKABLE": false,
-      "COLOR": "#634536"
-    },
-    "12": {
-      "TYPE": "Ocean",
-      "SYMBOL": "W",
-      "BASE_COST": [],
-      "WALKABLE": false,
-      "COLOR": "#3cbcfc"
-    },
-    "13": {
-      "TYPE": "Water",
-      "SYMBOL": "E",
-      "BASE_COST": ["Boots"],
-      "WALKABLE": true,
-      "COLOR": "#85d5ff"
-    },
-    "14": {
-      "TYPE": "Boulder",
-      "SYMBOL": "O",
-      "BASE_COST": ["Hammer"],
-      "WALKABLE": true,
-      "COLOR": "#dc7e4f"
-    },
-    "15": {
-      "TYPE": "Monster",
-      "SYMBOL": "A",
-      "BASE_COST": ["Flute"],
-      "WALKABLE": true,
-      "COLOR": "#ff6def"
-    }
-  },
-  "locations": [
-    {
-      "description": "North Castle",
-      "entrance": [
-        23,
-        22
-      ],
-      "exit": [
-        23,
-        22
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Trophy cave",
-      "entrance": [
-        29,
-        2
-      ],
-      "exit": [
-        29,
-        2
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": [
-        "Trophy"
-      ]
-    },
-    {
-      "description": "Cave 1",
-      "entrance": [
-        16,
-        30
-      ],
-      "exit": [
-        16,
-        30
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": [
-        "Magic1"
-      ]
-    },
-    {
-      "description": "Rauru Town",
-      "entrance": [
-        46,
-        24
-      ],
-      "exit": [
-        46,
-        24
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": [
-        "Shield"
-      ]
-    },
-    {
-      "description": "Ruto Town",
-      "entrance": [
-        2,
-        6
-      ],
-      "exit": [
-        2,
-        6
-      ],
-      "traversal_cost": [],
-      "reward_cost": [
-        "Trophy"
-      ],
-      "reward": [
-        "Jump"
-      ]
-    },
-    {
-      "description": "Parapa Cave (1)",
-      "entrance": [
-        48,
-        11
-      ],
-      "exit": [
-        55,
-        16
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Parapa Cave (2)",
-      "entrance": [
-        55,
-        16
-      ],
-      "exit": [
-        48,
-        11
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Secret 2",
-      "entrance": [
-        62,
-        34
-      ],
-      "exit": [
-        62,
-        34
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": [
-        "Heart1"
-      ]
-    },
-    {
-      "description": "Northwestern Cave (1)",
-      "entrance": [
-        1,
-        28
-      ],
-      "exit": [
-        3,
-        32
-      ],
-      "traversal_cost": [
-        "Jump"
-      ],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Northwestern Cave (2)",
-      "entrance": [
-        3,
-        32
-      ],
-      "exit": [
-        1,
-        28
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Parapa Palace",
-      "entrance": [
-        62,
-        2
-      ],
-      "exit": [
-        62,
-        2
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": [
-        "Candle",
-        "Crystal1"
-      ]
-    },
-    {
-      "description": "Cave 3",
-      "entrance": [
-        54,
-        32
-      ],
-      "exit": [
-        54,
-        32
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": [
-        "Heart2"
-      ]
-    },
-    {
-      "description": "Cave 4",
-      "entrance": [
-        9,
-        39
-      ],
-      "exit": [
-        9,
-        39
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": [
-        "LifeWater"
-      ]
-    },
-    {
-      "description": "North Saria Town",
-      "entrance": [
-        8,
-        59
-      ],
-      "exit": [
-        8,
-        61
-      ],
-      "traversal_cost": [
-        "BaguNote"
-      ],
-      "reward_cost": [],
-      "reward": [
-        "Life"
-      ]
-    },
-    {
-      "description": "South Saria Town",
-      "entrance": [
-        8,
-        61
-      ],
-      "exit": [
-        8,
-        59
-      ],
-      "traversal_cost": [
-        "BaguNote"
-      ],
-      "reward_cost": [],
-      "reward": [
-        "Life"
-      ]
-    },
-    {
-      "description": "Death Mountain Tunnel 1 Entrance",
-      "entrance": [
-        10,
-        65
-      ],
-      "exit": [
-        7,
-        82
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Death Mountain Tunnel 2 Exit",
-      "entrance": [
-        21,
-        66
-      ],
-      "exit": [
-        23,
-        82
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Bagu's Cabin",
-      "entrance": [
-        21,
-        46
-      ],
-      "exit": [
-        21,
-        46
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": [
-        "BaguNote"
-      ]
-    },
-    {
-      "description": "Mido Town",
-      "entrance": [
-        60,
-        45
-      ],
-      "exit": [
-        60,
-        45
-      ],
-      "traversal_cost": [],
-      "reward_cost": [
-        "LifeWater"
-      ],
-      "reward": [
-        "Fairy"
-      ]
-    },
-    {
-      "description": "Midoro Swamp Palace",
-      "entrance": [
-        11,
-        34
-      ],
-      "exit": [
-        11,
-        34
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": [
-        "Gloves",
-        "Crystal2"
-      ]
-    },
-    {
-      "description": "Island Palace Tunnel (1)",
-      "entrance": [
-        50,
-        66
-      ],
-      "exit": [
-        59,
-        72
-      ],
-      "traversal_cost": [
-        "Fairy"
-      ],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Island Palace Tunnel (2)",
-      "entrance": [
-        59,
-        72
-      ],
-      "exit": [
-        50,
-        66
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Dock to East Hyrule",
-      "entrance": [
-        61,
-        47
-      ],
-      "exit": [
-        72,
-        22
-      ],
-      "traversal_cost": [
-        "Raft"
-      ],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Island Palace",
-      "entrance": [
-        57,
-        68
-      ],
-      "exit": [
-        57,
-        68
-      ],
-      "traversal_cost": [],
-      "reward_cost": [
-        "Gloves"
-      ],
-      "reward": [
-        "Raft",
-        "Crystal3"
-      ]
-    },
-    {
-      "description": "Death Mountain Tunnel 1 Exit",
-      "entrance": [
-        7,
-        82
-      ],
-      "exit": [
-        10,
-        65
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 1A",
-      "entrance": [
-        4,
-        86
-      ],
-      "exit": [
-        0,
-        87
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 1B",
-      "entrance": [
-        0,
-        87
-      ],
-      "exit": [
-        4,
-        86
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 2A",
-      "entrance": [
-        3,
-        90
-      ],
-      "exit": [
-        7,
-        90
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 2B",
-      "entrance": [
-        7,
-        90
-      ],
-      "exit": [
-        3,
-        90
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 3A",
-      "entrance": [
-        3,
-        93
-      ],
-      "exit": [
-        5,
-        92
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 3B",
-      "entrance": [
-        5,
-        92
-      ],
-      "exit": [
-        3,
-        93
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 4A",
-      "entrance": [
-        4,
-        96
-      ],
-      "exit": [
-        5,
-        99
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 4B",
-      "entrance": [
-        5,
-        99
-      ],
-      "exit": [
-        4,
-        96
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 5A",
-      "entrance": [
-        7,
-        102
-      ],
-      "exit": [
-        3,
-        104
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 5B",
-      "entrance": [
-        3,
-        104
-      ],
-      "exit": [
-        7,
-        102
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 6A",
-      "entrance": [
-        9,
-        85
-      ],
-      "exit": [
-        11,
-        87
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 6B",
-      "entrance": [
-        11,
-        87
-      ],
-      "exit": [
-        9,
-        85
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 7A",
-      "entrance": [
-        16,
-        88
-      ],
-      "exit": [
-        14,
-        84
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 7B",
-      "entrance": [
-        14,
-        84
-      ],
-      "exit": [
-        16,
-        88
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 8A",
-      "entrance": [
-        18,
-        85
-      ],
-      "exit": [
-        18,
-        89
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 8B",
-      "entrance": [
-        18,
-        89
-      ],
-      "exit": [
-        18,
-        85
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 8C",
-      "entrance": [
-        8,
-        97
-      ],
-      "exit": [
-        10,
-        96
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 8D",
-      "entrance": [
-        10,
-        96
-      ],
-      "exit": [
-        8,
-        97
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 9A",
-      "entrance": [
-        11,
-        99
-      ],
-      "exit": [
-        14,
-        99
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 9B",
-      "entrance": [
-        14,
-        99
-      ],
-      "exit": [
-        11,
-        99
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 9C",
-      "entrance": [
-        9,
-        92
-      ],
-      "exit": [
-        11,
-        93
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 9D",
-      "entrance": [
-        11,
-        93
-      ],
-      "exit": [
-        9,
-        92
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 10A",
-      "entrance": [
-        14,
-        92
-      ],
-      "exit": [
-        16,
-        93
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 10B",
-      "entrance": [
-        16,
-        93
-      ],
-      "exit": [
-        14,
-        92
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 11A",
-      "entrance": [
-        20,
-        93
-      ],
-      "exit": [
-        20,
-        95
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 11B",
-      "entrance": [
-        20,
-        95
-      ],
-      "exit": [
-        20,
-        93
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 12A",
-      "entrance": [
-        22,
-        97
-      ],
-      "exit": [
-        20,
-        99
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 12B",
-      "entrance": [
-        20,
-        99
-      ],
-      "exit": [
-        22,
-        97
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 13A",
-      "entrance": [
-        18,
-        102
-      ],
-      "exit": [
-        15,
-        103
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 13B",
-      "entrance": [
-        15,
-        103
-      ],
-      "exit": [
-        18,
-        102
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 14A",
-      "entrance": [
-        13,
-        105
-      ],
-      "exit": [
-        17,
-        105
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 14B",
-      "entrance": [
-        17,
-        105
-      ],
-      "exit": [
-        13,
-        105
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 15A",
-      "entrance": [
-        18,
-        108
-      ],
-      "exit": [
-        16,
-        110
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 15B",
-      "entrance": [
-        16,
-        110
-      ],
-      "exit": [
-        18,
-        108
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 16A",
-      "entrance": [
-        22,
-        108
-      ],
-      "exit": [
-        24,
-        105
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 16B",
-      "entrance": [
-        24,
-        105
-      ],
-      "exit": [
-        22,
-        108
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Spectacle Cave",
-      "entrance": [
-        10,
-        109
-      ],
-      "exit": [
-        10,
-        109
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": [
-        "Hammer"
-      ]
-    },
-    {
-      "description": "Spectacle Rock",
-      "entrance": [
-        8,
-        109
-      ],
-      "exit": [
-        8,
-        109
-      ],
-      "traversal_cost": [
-        "Hammer"
-      ],
-      "reward_cost": [],
-      "reward": [
-        "Magic2"
-      ]
-    },
-    {
-      "description": "Death Mountain Tunnel 2 Entrance",
-      "entrance": [
-        23,
-        82
-      ],
-      "exit": [
-        21,
-        66
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Secret 16",
-      "entrance": [
-        128,
-        26
-      ],
-      "exit": [
-        128,
-        26
-      ],
-      "traversal_cost": [
-        "Boots"
-      ],
-      "reward_cost": [],
-      "reward": [
-        "Heart3"
-      ]
-    },
-    {
-      "description": "Northeastern Cave (1)",
-      "entrance": [
-        89,
-        22
-      ],
-      "exit": [
-        92,
-        18
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Northeastern Cave (2)",
-      "entrance": [
-        92,
-        18
-      ],
-      "exit": [
-        89,
-        22
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Kasuto Cave (1)",
-      "entrance": [
-        114,
-        48
-      ],
-      "exit": [
-        122,
-        48
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Kasuto Cave (2)",
-      "entrance": [
-        122,
-        48
-      ],
-      "exit": [
-        114,
-        48
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 7 (1)",
-      "entrance": [
-        75,
-        47
-      ],
-      "exit": [
-        71,
-        47
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 7 (2)",
-      "entrance": [
-        71,
-        47
-      ],
-      "exit": [
-        75,
-        47
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 8 (1)",
-      "entrance": [
-        67,
-        45
-      ],
-      "exit": [
-        69,
-        45
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Cave 8 (2)",
-      "entrance": [
-        69,
-        45
-      ],
-      "exit": [
-        67,
-        45
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Secret 19",
-      "entrance": [
-        122,
-        69
-      ],
-      "exit": [
-        122,
-        69
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": [
-        "Heart4"
-      ]
-    },
-    {
-      "description": "Maze Island Bridge (East Hyrule)",
-      "entrance": [
-        117,
-        10
-      ],
-      "exit": [
-        105,
-        112
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Dock to West Hyrule",
-      "entrance": [
-        72,
-        22
-      ],
-      "exit": [
-        61,
-        47
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Nabooru",
-      "entrance": [
-        88,
-        30
-      ],
-      "exit": [
-        88,
-        30
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": [
-        "Fire"
-      ]
-    },
-    {
-      "description": "Darunia",
-      "entrance": [
-        68,
-        3
-      ],
-      "exit": [
-        68,
-        3
-      ],
-      "traversal_cost": [],
-      "reward_cost": [
-        "LostChild"
-      ],
-      "reward": [
-        "Reflect"
-      ]
-    },
-    {
-      "description": "New Kasuto",
-      "entrance": [
-        126,
-        51
-      ],
-      "exit": [
-        126,
-        51
-      ],
-      "traversal_cost": [
-        "Hammer"
-      ],
-      "reward_cost": [
-        "Spell"
-      ],
-      "reward": [
-        "Key",
-        "Magic4"
-      ]
-    },
-    {
-      "description": "Old Kasuto",
-      "entrance": [
-        99,
-        69
-      ],
-      "exit": [
-        99,
-        69
-      ],
-      "traversal_cost": [],
-      "reward_cost": [
-        "Cross"
-      ],
-      "reward": [
-        "Thunder"
-      ]
-    },
-    {
-      "description": "Ocean Palace",
-      "entrance": [
-        127,
-        30
-      ],
-      "exit": [
-        127,
-        30
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": [
-        "Flute",
-        "Crystal5"
-      ]
-    },
-    {
-      "description": "Three-Eye Rock Palace",
-      "entrance": [
-        110,
-        72
-      ],
-      "exit": [
-        110,
-        72
-      ],
-      "traversal_cost": [
-        "Flute"
-      ],
-      "reward_cost": [
-        "Hammer"
-      ],
-      "reward": [
-        "Cross",
-        "Crystal6"
-      ]
-    },
-    {
-      "description": "Great Palace",
-      "entrance": [
-        69,
-        43
-      ],
-      "exit": [
-        69,
-        43
-      ],
-      "traversal_cost": [],
-      "reward_cost": [
-        "Thunder",
-        "Crystal1",
-        "Crystal2",
-        "Crystal3",
-        "Crystal4",
-        "Crystal5",
-        "Crystal6"
-      ],
-      "reward": [
-        "Triforce"
-      ]
-    },
-    {
-      "description": "Maze Island Secret",
-      "entrance": [
-        106,
-        103
-      ],
-      "exit": [
-        106,
-        103
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": [
-        "Magic3"
-      ]
-    },
-    {
-      "description": "Maze Island Bridge (Maze Island)",
-      "entrance": [
-        105,
-        112
-      ],
-      "exit": [
-        117,
-        10
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": []
-    },
-    {
-      "description": "Maze Island Hidden Cave",
-      "entrance": [
-        122,
-        105
-      ],
-      "exit": [
-        122,
-        105
-      ],
-      "traversal_cost": [],
-      "reward_cost": [],
-      "reward": [
-        "LostChild"
-      ]
-    },
-    {
-      "description": "Maze Palace",
-      "entrance": [
-        125,
-        103
-      ],
-      "exit": [
-        125,
-        103
-      ],
-      "traversal_cost": [],
-      "reward_cost": [
-        "Reflect"
-      ],
-      "reward": [
-        "Boots",
-        "Crystal4"
-      ]
-    }
-  ]
+    "tiles": {
+        "0": {
+            "TYPE": "Town",
+            "SYMBOL": "T",
+            "BASE_COST": [],
+            "WALKABLE": true,
+            "COLOR": "#747474"
+        },
+        "1": {
+            "TYPE": "Cave",
+            "SYMBOL": "C",
+            "BASE_COST": [],
+            "WALKABLE": true,
+            "COLOR": "#000000"
+        },
+        "2": {
+            "TYPE": "Palace",
+            "SYMBOL": "P",
+            "BASE_COST": [],
+            "WALKABLE": true,
+            "COLOR": "#efefef"
+        },
+        "3": {
+            "TYPE": "Bridge",
+            "SYMBOL": "B",
+            "BASE_COST": [],
+            "WALKABLE": true,
+            "COLOR": "#f0bc3c"
+        },
+        "4": {
+            "TYPE": "Desert",
+            "SYMBOL": "D",
+            "BASE_COST": [],
+            "WALKABLE": true,
+            "COLOR": "#fabcb0"
+        },
+        "5": {
+            "TYPE": "Grassland",
+            "SYMBOL": "G",
+            "BASE_COST": [],
+            "WALKABLE": true,
+            "COLOR": "#80D010"
+        },
+        "6": {
+            "TYPE": "Forest",
+            "SYMBOL": "F",
+            "BASE_COST": [],
+            "WALKABLE": true,
+            "COLOR": "#009400"
+        },
+        "7": {
+            "TYPE": "Swamp",
+            "SYMBOL": "S",
+            "BASE_COST": [],
+            "WALKABLE": true,
+            "COLOR": "#386138"
+        },
+        "8": {
+            "TYPE": "Graveyard",
+            "SYMBOL": "Y",
+            "BASE_COST": [],
+            "WALKABLE": true,
+            "COLOR": "#fcfcfc"
+        },
+        "9": {
+            "TYPE": "Road",
+            "SYMBOL": "R",
+            "BASE_COST": [],
+            "WALKABLE": true,
+            "COLOR": "#ffbc3c"
+        },
+        "10": {
+            "TYPE": "Volcanic",
+            "SYMBOL": "V",
+            "BASE_COST": [],
+            "WALKABLE": true,
+            "COLOR": "#c84c0c"
+        },
+        "11": {
+            "TYPE": "Mountain",
+            "SYMBOL": "M",
+            "BASE_COST": [],
+            "WALKABLE": false,
+            "COLOR": "#634536"
+        },
+        "12": {
+            "TYPE": "Ocean",
+            "SYMBOL": "W",
+            "BASE_COST": [],
+            "WALKABLE": false,
+            "COLOR": "#3cbcfc"
+        },
+        "13": {
+            "TYPE": "Water",
+            "SYMBOL": "E",
+            "BASE_COST": [
+                "Boots"
+            ],
+            "WALKABLE": true,
+            "COLOR": "#85d5ff"
+        },
+        "14": {
+            "TYPE": "Boulder",
+            "SYMBOL": "O",
+            "BASE_COST": [
+                "Hammer"
+            ],
+            "WALKABLE": true,
+            "COLOR": "#dc7e4f"
+        },
+        "15": {
+            "TYPE": "Monster",
+            "SYMBOL": "A",
+            "BASE_COST": [
+                "Flute"
+            ],
+            "WALKABLE": true,
+            "COLOR": "#ff6def"
+        }
+    },
+    "locations": [
+        {
+            "description": "North Castle",
+            "entrance": [
+                23,
+                22
+            ],
+            "exit": [
+                23,
+                22
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Trophy cave",
+            "entrance": [
+                29,
+                2
+            ],
+            "exit": [
+                29,
+                2
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": [
+                "Trophy"
+            ]
+        },
+        {
+            "description": "Cave 1",
+            "entrance": [
+                16,
+                30
+            ],
+            "exit": [
+                16,
+                30
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": [
+                "Magic1"
+            ]
+        },
+        {
+            "description": "Rauru Town",
+            "entrance": [
+                46,
+                24
+            ],
+            "exit": [
+                46,
+                24
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": [
+                "Shield"
+            ]
+        },
+        {
+            "description": "Ruto Town",
+            "entrance": [
+                2,
+                6
+            ],
+            "exit": [
+                2,
+                6
+            ],
+            "traversal_cost": [],
+            "reward_cost": [
+                "Trophy"
+            ],
+            "reward": [
+                "Jump"
+            ]
+        },
+        {
+            "description": "Parapa Cave (1)",
+            "entrance": [
+                48,
+                11
+            ],
+            "exit": [
+                55,
+                16
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Parapa Cave (2)",
+            "entrance": [
+                55,
+                16
+            ],
+            "exit": [
+                48,
+                11
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Secret 2",
+            "entrance": [
+                62,
+                34
+            ],
+            "exit": [
+                62,
+                34
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": [
+                "Heart1"
+            ]
+        },
+        {
+            "description": "Northwestern Cave (1)",
+            "entrance": [
+                1,
+                28
+            ],
+            "exit": [
+                3,
+                32
+            ],
+            "traversal_cost": [
+                "Jump"
+            ],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Northwestern Cave (2)",
+            "entrance": [
+                3,
+                32
+            ],
+            "exit": [
+                1,
+                28
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Parapa Palace",
+            "entrance": [
+                62,
+                2
+            ],
+            "exit": [
+                62,
+                2
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": [
+                "Candle",
+                "Crystal1"
+            ]
+        },
+        {
+            "description": "Cave 3",
+            "entrance": [
+                54,
+                32
+            ],
+            "exit": [
+                54,
+                32
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": [
+                "Heart2"
+            ]
+        },
+        {
+            "description": "Cave 4",
+            "entrance": [
+                9,
+                39
+            ],
+            "exit": [
+                9,
+                39
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": [
+                "LifeWater"
+            ]
+        },
+        {
+            "description": "North Saria Town",
+            "entrance": [
+                8,
+                59
+            ],
+            "exit": [
+                8,
+                61
+            ],
+            "traversal_cost": [
+                "BaguNote"
+            ],
+            "reward_cost": [],
+            "reward": [
+                "Life"
+            ]
+        },
+        {
+            "description": "South Saria Town",
+            "entrance": [
+                8,
+                61
+            ],
+            "exit": [
+                8,
+                59
+            ],
+            "traversal_cost": [
+                "BaguNote"
+            ],
+            "reward_cost": [],
+            "reward": [
+                "Life"
+            ]
+        },
+        {
+            "description": "Death Mountain Tunnel 1 Entrance",
+            "entrance": [
+                10,
+                65
+            ],
+            "exit": [
+                7,
+                82
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Death Mountain Tunnel 2 Exit",
+            "entrance": [
+                21,
+                66
+            ],
+            "exit": [
+                23,
+                82
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Bagu's Cabin",
+            "entrance": [
+                21,
+                46
+            ],
+            "exit": [
+                21,
+                46
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": [
+                "BaguNote"
+            ]
+        },
+        {
+            "description": "Mido Town",
+            "entrance": [
+                60,
+                45
+            ],
+            "exit": [
+                60,
+                45
+            ],
+            "traversal_cost": [],
+            "reward_cost": [
+                "LifeWater"
+            ],
+            "reward": [
+                "Fairy"
+            ]
+        },
+        {
+            "description": "Midoro Swamp Palace",
+            "entrance": [
+                11,
+                34
+            ],
+            "exit": [
+                11,
+                34
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": [
+                "Gloves",
+                "Crystal2"
+            ]
+        },
+        {
+            "description": "Island Palace Tunnel (1)",
+            "entrance": [
+                50,
+                66
+            ],
+            "exit": [
+                59,
+                72
+            ],
+            "traversal_cost": [
+                "Fairy"
+            ],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Island Palace Tunnel (2)",
+            "entrance": [
+                59,
+                72
+            ],
+            "exit": [
+                50,
+                66
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Dock to East Hyrule",
+            "entrance": [
+                61,
+                47
+            ],
+            "exit": [
+                72,
+                22
+            ],
+            "traversal_cost": [
+                "Raft"
+            ],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Island Palace",
+            "entrance": [
+                57,
+                68
+            ],
+            "exit": [
+                57,
+                68
+            ],
+            "traversal_cost": [],
+            "reward_cost": [
+                "Gloves"
+            ],
+            "reward": [
+                "Raft",
+                "Crystal3"
+            ]
+        },
+        {
+            "description": "Death Mountain Tunnel 1 Exit",
+            "entrance": [
+                7,
+                82
+            ],
+            "exit": [
+                10,
+                65
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 1A",
+            "entrance": [
+                4,
+                86
+            ],
+            "exit": [
+                0,
+                87
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 1B",
+            "entrance": [
+                0,
+                87
+            ],
+            "exit": [
+                4,
+                86
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 2A",
+            "entrance": [
+                3,
+                90
+            ],
+            "exit": [
+                7,
+                90
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 2B",
+            "entrance": [
+                7,
+                90
+            ],
+            "exit": [
+                3,
+                90
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 3A",
+            "entrance": [
+                3,
+                93
+            ],
+            "exit": [
+                5,
+                92
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 3B",
+            "entrance": [
+                5,
+                92
+            ],
+            "exit": [
+                3,
+                93
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 4A",
+            "entrance": [
+                4,
+                96
+            ],
+            "exit": [
+                5,
+                99
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 4B",
+            "entrance": [
+                5,
+                99
+            ],
+            "exit": [
+                4,
+                96
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 5A",
+            "entrance": [
+                7,
+                102
+            ],
+            "exit": [
+                3,
+                104
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 5B",
+            "entrance": [
+                3,
+                104
+            ],
+            "exit": [
+                7,
+                102
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 6A",
+            "entrance": [
+                9,
+                85
+            ],
+            "exit": [
+                11,
+                87
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 6B",
+            "entrance": [
+                11,
+                87
+            ],
+            "exit": [
+                9,
+                85
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 7A",
+            "entrance": [
+                16,
+                88
+            ],
+            "exit": [
+                14,
+                84
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 7B",
+            "entrance": [
+                14,
+                84
+            ],
+            "exit": [
+                16,
+                88
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 8A",
+            "entrance": [
+                18,
+                85
+            ],
+            "exit": [
+                18,
+                89
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 8B",
+            "entrance": [
+                18,
+                89
+            ],
+            "exit": [
+                18,
+                85
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 8C",
+            "entrance": [
+                8,
+                97
+            ],
+            "exit": [
+                10,
+                96
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 8D",
+            "entrance": [
+                10,
+                96
+            ],
+            "exit": [
+                8,
+                97
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 9A",
+            "entrance": [
+                11,
+                99
+            ],
+            "exit": [
+                14,
+                99
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 9B",
+            "entrance": [
+                14,
+                99
+            ],
+            "exit": [
+                11,
+                99
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 9C",
+            "entrance": [
+                9,
+                92
+            ],
+            "exit": [
+                11,
+                93
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 9D",
+            "entrance": [
+                11,
+                93
+            ],
+            "exit": [
+                9,
+                92
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 10A",
+            "entrance": [
+                14,
+                92
+            ],
+            "exit": [
+                16,
+                93
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 10B",
+            "entrance": [
+                16,
+                93
+            ],
+            "exit": [
+                14,
+                92
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 11A",
+            "entrance": [
+                20,
+                93
+            ],
+            "exit": [
+                20,
+                95
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 11B",
+            "entrance": [
+                20,
+                95
+            ],
+            "exit": [
+                20,
+                93
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 12A",
+            "entrance": [
+                22,
+                97
+            ],
+            "exit": [
+                20,
+                99
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 12B",
+            "entrance": [
+                20,
+                99
+            ],
+            "exit": [
+                22,
+                97
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 13A",
+            "entrance": [
+                18,
+                102
+            ],
+            "exit": [
+                15,
+                103
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 13B",
+            "entrance": [
+                15,
+                103
+            ],
+            "exit": [
+                18,
+                102
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 14A",
+            "entrance": [
+                13,
+                105
+            ],
+            "exit": [
+                17,
+                105
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 14B",
+            "entrance": [
+                17,
+                105
+            ],
+            "exit": [
+                13,
+                105
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 15A",
+            "entrance": [
+                18,
+                108
+            ],
+            "exit": [
+                16,
+                110
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 15B",
+            "entrance": [
+                16,
+                110
+            ],
+            "exit": [
+                18,
+                108
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 16A",
+            "entrance": [
+                22,
+                108
+            ],
+            "exit": [
+                24,
+                105
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 16B",
+            "entrance": [
+                24,
+                105
+            ],
+            "exit": [
+                22,
+                108
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Spectacle Cave",
+            "entrance": [
+                10,
+                109
+            ],
+            "exit": [
+                10,
+                109
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": [
+                "Hammer"
+            ]
+        },
+        {
+            "description": "Spectacle Rock",
+            "entrance": [
+                8,
+                109
+            ],
+            "exit": [
+                8,
+                109
+            ],
+            "traversal_cost": [
+                "Hammer"
+            ],
+            "reward_cost": [],
+            "reward": [
+                "Magic2"
+            ]
+        },
+        {
+            "description": "Death Mountain Tunnel 2 Entrance",
+            "entrance": [
+                23,
+                82
+            ],
+            "exit": [
+                21,
+                66
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Secret 16",
+            "entrance": [
+                128,
+                26
+            ],
+            "exit": [
+                128,
+                26
+            ],
+            "traversal_cost": [
+                "Boots"
+            ],
+            "reward_cost": [],
+            "reward": [
+                "Heart3"
+            ]
+        },
+        {
+            "description": "Northeastern Cave (1)",
+            "entrance": [
+                89,
+                22
+            ],
+            "exit": [
+                92,
+                18
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Northeastern Cave (2)",
+            "entrance": [
+                92,
+                18
+            ],
+            "exit": [
+                89,
+                22
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Kasuto Cave (1)",
+            "entrance": [
+                114,
+                48
+            ],
+            "exit": [
+                122,
+                48
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Kasuto Cave (2)",
+            "entrance": [
+                122,
+                48
+            ],
+            "exit": [
+                114,
+                48
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 7 (1)",
+            "entrance": [
+                75,
+                47
+            ],
+            "exit": [
+                71,
+                47
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 7 (2)",
+            "entrance": [
+                71,
+                47
+            ],
+            "exit": [
+                75,
+                47
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 8 (1)",
+            "entrance": [
+                67,
+                45
+            ],
+            "exit": [
+                69,
+                45
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Cave 8 (2)",
+            "entrance": [
+                69,
+                45
+            ],
+            "exit": [
+                67,
+                45
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Secret 19",
+            "entrance": [
+                122,
+                69
+            ],
+            "exit": [
+                122,
+                69
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": [
+                "Heart4"
+            ]
+        },
+        {
+            "description": "Maze Island Bridge (East Hyrule)",
+            "entrance": [
+                117,
+                10
+            ],
+            "exit": [
+                105,
+                112
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Dock to West Hyrule",
+            "entrance": [
+                72,
+                22
+            ],
+            "exit": [
+                61,
+                47
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Nabooru",
+            "entrance": [
+                88,
+                30
+            ],
+            "exit": [
+                88,
+                30
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": [
+                "Fire"
+            ]
+        },
+        {
+            "description": "Darunia",
+            "entrance": [
+                68,
+                3
+            ],
+            "exit": [
+                68,
+                3
+            ],
+            "traversal_cost": [],
+            "reward_cost": [
+                "LostChild"
+            ],
+            "reward": [
+                "Reflect"
+            ]
+        },
+        {
+            "description": "New Kasuto",
+            "entrance": [
+                126,
+                51
+            ],
+            "exit": [
+                126,
+                51
+            ],
+            "traversal_cost": [
+                "Hammer"
+            ],
+            "reward_cost": [
+                "Spell"
+            ],
+            "reward": [
+                "Key",
+                "Magic4"
+            ]
+        },
+        {
+            "description": "Old Kasuto",
+            "entrance": [
+                99,
+                69
+            ],
+            "exit": [
+                99,
+                69
+            ],
+            "traversal_cost": [],
+            "reward_cost": [
+                "Cross"
+            ],
+            "reward": [
+                "Thunder"
+            ]
+        },
+        {
+            "description": "Ocean Palace",
+            "entrance": [
+                127,
+                30
+            ],
+            "exit": [
+                127,
+                30
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": [
+                "Flute",
+                "Crystal5"
+            ]
+        },
+        {
+            "description": "Three-Eye Rock Palace",
+            "entrance": [
+                110,
+                72
+            ],
+            "exit": [
+                110,
+                72
+            ],
+            "traversal_cost": [
+                "Flute"
+            ],
+            "reward_cost": [
+                "Hammer"
+            ],
+            "reward": [
+                "Cross",
+                "Crystal6"
+            ]
+        },
+        {
+            "description": "Great Palace",
+            "entrance": [
+                69,
+                43
+            ],
+            "exit": [
+                69,
+                43
+            ],
+            "traversal_cost": [],
+            "reward_cost": [
+                "Thunder",
+                "Crystal1",
+                "Crystal2",
+                "Crystal3",
+                "Crystal4",
+                "Crystal5",
+                "Crystal6"
+            ],
+            "reward": [
+                "Triforce"
+            ]
+        },
+        {
+            "description": "Maze Island Secret",
+            "entrance": [
+                106,
+                103
+            ],
+            "exit": [
+                106,
+                103
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": [
+                "Magic3"
+            ]
+        },
+        {
+            "description": "Maze Island Bridge (Maze Island)",
+            "entrance": [
+                105,
+                112
+            ],
+            "exit": [
+                117,
+                10
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": []
+        },
+        {
+            "description": "Maze Island Hidden Cave",
+            "entrance": [
+                122,
+                105
+            ],
+            "exit": [
+                122,
+                105
+            ],
+            "traversal_cost": [],
+            "reward_cost": [],
+            "reward": [
+                "LostChild"
+            ]
+        },
+        {
+            "description": "Maze Palace",
+            "entrance": [
+                125,
+                103
+            ],
+            "exit": [
+                125,
+                103
+            ],
+            "traversal_cost": [],
+            "reward_cost": [
+                "Reflect"
+            ],
+            "reward": [
+                "Boots",
+                "Crystal4"
+            ]
+        }
+    ]
 }
