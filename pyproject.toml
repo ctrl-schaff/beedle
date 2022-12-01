@@ -18,6 +18,11 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
+    "flake8>=4.0.1",
+    "loguru>=0.6.0",
+    "numpy>=1.22.1",
+    "pylint>=2.15.0",
+    "pytest>=6.2.5"
 ]
 
 [project.urls]

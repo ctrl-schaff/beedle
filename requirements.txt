@@ -1,8 +1,0 @@
-flake8==4.0.1
-loguru==0.6.0
-numpy==1.22.1
-pylint==2.15.0
-pytest-env==0.6.2
-pytest==6.2.5
-python-dotenv==0.21.0
-
