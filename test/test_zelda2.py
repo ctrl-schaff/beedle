@@ -15,13 +15,13 @@ import pytest
 from beedle import TileGraph, LocationMap, TileMap, TileMapIndexError
 
 
-def test_location_map(configuration):
+def test_location_map(zelda2_configuration):
     """
     Test the ability to translate the configuration
     field <locations> parsed as a json structure into
     a LocationMap data structure
     """
-    location_data = configuration.get("locations", None)
+    location_data = zelda2_configuration.get("locations", None)
     assert location_data
     location_map = LocationMap(location_data)
 
@@ -74,19 +74,19 @@ def test_location_map(configuration):
         )
 
 
-def test_map_generation(z2_map_data, configuration):
+def test_map_generation(zelda2_map, zelda2_configuration):
     """
     Tests the ability to turn the map data and specified
     configuration into a TileMap data structure
     """
-    location_data = configuration.get("locations", None)
+    location_data = zelda2_configuration.get("locations", None)
     assert location_data
 
-    tile_data = configuration.get("tiles", None)
+    tile_data = zelda2_configuration.get("tiles", None)
     assert tile_data
     location_map = LocationMap(location_data)
 
-    tile_map = TileMap(z2_map_data, location_map, tile_data)
+    tile_map = TileMap(zelda2_map, location_map, tile_data)
 
     for location, properties in location_map.items():
         location_node = tile_map[location]
@@ -139,18 +139,18 @@ def test_map_generation(z2_map_data, configuration):
         logger.info(bound_node)
 
 
-def test_graph_generation(z2_map_data, configuration):
+def test_graph_generation(zelda2_map, zelda2_configuration):
     """
     Attempts to generate the graph logic from the zelda 2 map
     """
-    location_data = configuration.get("locations", None)
+    location_data = zelda2_configuration.get("locations", None)
     assert location_data
 
-    tile_data = configuration.get("tiles", None)
+    tile_data = zelda2_configuration.get("tiles", None)
     assert tile_data
 
     location_map = LocationMap(location_data)
-    tile_map = TileMap(z2_map_data, location_map, tile_data)
+    tile_map = TileMap(zelda2_map, location_map, tile_data)
 
     graph_start = (23, 22)
     graph_end = (69, 43)
