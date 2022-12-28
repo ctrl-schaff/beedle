@@ -193,8 +193,9 @@ topological_order, topological_graph = graph_obj.topological_sort(tile_map, loca
 
 # References 
 * [Zelda2MapEdit](https://github.com/matal3a0/Zelda2MapEdit)
-    * Author:Johan Björnell
+    * Author: Johan Björnell
     * Launched off the methods for reading / writing from the rom file
     * Based file format for game graph logic off the maplocations variable
-
-
+* [NesZeldaMapData](https://github.com/asweigart/nes_zelda_map_data)
+    * Author: 
+    * Used the overmap data for constructing the configuration for the zelda 1 map

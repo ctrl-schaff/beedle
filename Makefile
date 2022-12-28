@@ -16,7 +16,7 @@ endif
 PROJECT_NAME = beedle
 REQUIREMENTS = requirements.txt
 TEST_DIRECTORY = test
-
+TOOLS_DIRECTORY = tools
 
 # Virtual Environment
 PY = python3
@@ -49,6 +49,8 @@ lint:
 > $(BIN)/flake8 --exit-zero --show-source --statistics --benchmark $(PROJECT_NAME)
 > $(BIN)/pylint --exit-zero --jobs 0 --recursive true $(TEST_DIRECTORY)
 > $(BIN)/flake8 --exit-zero --show-source --statistics --benchmark $(TEST_DIRECTORY)
+> $(BIN)/pylint --exit-zero --jobs 0 --recursive true $(TOOLS_DIRECTORY)
+> $(BIN)/flake8 --exit-zero --show-source --statistics --benchmark $(TOOLS_DIRECTORY)
 
 .PHONY: clean
 clean:

@@ -20,7 +20,7 @@ The input configuration for the color definitions uses the following:
 import argparse
 import json
 from pathlib import Path
-from typing import List, Tuple, Union
+from typing import Tuple, Union
 
 import numpy as np
 import matplotlib as mpl
@@ -28,6 +28,26 @@ import matplotlib.pyplot as plt
 
 ColorMap = mpl.colors.ListedColormap
 Mapper = mpl.cm.ScalarMappable
+
+
+def load_hex_data(filename: Union[str, Path]) -> np.array:
+    """
+    Loads the map data into a 2D numpy array
+
+    Expected map data file format {base16):
+    <int> <int> ... <int>\n
+    <int> <int> ... <int>\n
+    ...
+    <int> <int> ... <int>
+    """
+    with open(filename, "r", encoding="utf-8") as file_handle:
+        new_map = []
+        for map_row in file_handle.readlines():
+            inner_list = []
+            for inner_value in map_row.strip("\n").split():
+                inner_list.append(int(inner_value, 16))
+            new_map.append(inner_list)
+        return np.array(new_map)
 
 
 def load_map_data(filename: Union[str, Path]) -> np.array:
@@ -55,21 +75,10 @@ def load_color_definitions(filename: Union[str, Path]) -> dict:
     """
     with open(filename, "r", encoding="utf-8") as file_handle:
         try:
-            color_definitions = json.load(file_handle)
+            raw_color_data = json.load(file_handle)
         except json.JSONDecodeError as json_decode_err:
             raise json_decode_err
-        return color_definitions
-
-
-def __parse_color_definitions(color_definitions: dict) -> List[str]:
-    """
-    Provided the dictionary of color definitions extract the
-    hex format color strings for colormap generation
-    """
-    hex_colors = [
-        tile_value["color"] for tile_value in color_definitions.values()
-    ]
-    return hex_colors
+        return raw_color_data
 
 
 def create_colormap(color_definitions: dict) -> Tuple[ColorMap, Mapper]:
@@ -83,11 +92,23 @@ def create_colormap(color_definitions: dict) -> Tuple[ColorMap, Mapper]:
     https://matplotlib.org/stable/api/cm_api.html#matplotlib.cm.ScalarMappable
     <ListedColormap>
     https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.ListedColormap
+    <LinearSegmentedColormap>
+    https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.LinearSegmentedColormap.html
     """
-    color_values = __parse_color_definitions(color_definitions)
-    normalize_function = plt.Normalize(0, len(color_values))
-    colormap_instance = mpl.colors.ListedColormap(color_values)
+    color_values = [tile_value["color"] for tile_value in color_definitions.values()]
+    color_index = [tile_value["index"] for tile_value in color_definitions.values()]
+    normalize_function = plt.Normalize(
+        vmin=min(color_index), vmax=max(color_index), clip=False
+    )
+    normalized_index = normalize_function(color_index)
 
+    color_data = []
+    for color, index in zip(color_values, normalized_index):
+        color_data.append((index, mpl.colors.to_rgb(color)))
+
+    colormap_instance = mpl.colors.LinearSegmentedColormap.from_list(
+        "custom", color_data
+    )
     mapper_instance = mpl.cm.ScalarMappable(
         norm=normalize_function, cmap=colormap_instance
     )
@@ -134,9 +155,8 @@ if __name__ == "__main__":
 
     args = parser_obj.parse_args()
     map_data = load_map_data(args.mapdata)
-    color_definitions = load_color_definitions(args.color_definitions)
-
-    colormap, mapper = create_colormap(color_definitions)
+    color_structure = load_color_definitions(args.color_definitions)
+    colormap, mapper = create_colormap(color_structure)
     color_map_data = translate_colormap(map_data, mapper)
 
     DPI = 1000
