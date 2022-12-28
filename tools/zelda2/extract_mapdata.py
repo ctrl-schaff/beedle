@@ -23,8 +23,8 @@ def chunker(
     """
     Collect data into fixed-length chunks or blocks
     """
-    args = [iter(iterable)] * length
-    return itertools.zip_longest(*args, fillvalue=fillvalue)
+    iter_collection = [iter(iterable)] * length
+    return itertools.zip_longest(*iter_collection, fillvalue=fillvalue)
 
 
 def extract_map_data(romfile: Path) -> np.array:
@@ -102,7 +102,7 @@ def extract_map_data(romfile: Path) -> np.array:
 
     # Transpose the map to ensure you can index with
     # (X, Y) rather than (Y, X)
-    map_data = map_data.T
+    # map_data = map_data.T
     return map_data
 
 
@@ -114,22 +114,24 @@ def write_map_data(map_data: np.array, output_file: Union[str, Path]) -> None:
     text_separator = " "
     text_format = "%1.0u"
     line_break = "\n"
-    np.savetxt(fname=output_file,
-               X=map_data,
-               fmt=text_format,
-               delimiter=text_separator,
-               newline=line_break)
+    np.savetxt(
+        fname=output_file,
+        X=map_data,
+        fmt=text_format,
+        delimiter=text_separator,
+        newline=line_break,
+    )
 
 
 if __name__ == "__main__":
     parser_obj = argparse.ArgumentParser()
     parser_obj.add_argument(
-        "-m",
-        "--mapdata",
-        dest="mapdata",
+        "-r",
+        "--romfile",
+        dest="romfile",
         type=str,
         required=True,
-        help="Input file path for the zelda 2 map data",
+        help="Input file path for the zelda 2 rom file",
     )
     parser_obj.add_argument(
         "-o",
@@ -137,14 +139,12 @@ if __name__ == "__main__":
         dest="outpath",
         type=str,
         required=True,
-        help="Output file path for the map image",
+        help="Output file path for the extracted map data",
     )
 
     args = parser_obj.parse_args()
-    mapfile_path = Path(args.mapdata).absolute().resolve()
+    mapfile_path = Path(args.romfile).absolute().resolve()
     outputfile_path = Path(args.outpath).absolute().resolve()
-
-    create_map_image(mapfile_path, 
 
     extracted_map_data = extract_map_data(mapfile_path)
     write_map_data(extracted_map_data, outputfile_path)

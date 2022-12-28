@@ -1,0 +1,452 @@
+{
+    "BROWN_ROCK": {
+        "index": 1,
+        "color": "#C84C0C",
+        "rgb": [78, 30, 5]
+    },
+    "OVERWORLD_PATH": {
+        "index": 2,
+        "color": "#FCD8A8",
+        "rgb": [100, 85, 66]
+    },
+    "BIG_BROWN_TREETOP_2": {
+        "index": 3,
+        "color": "#4e1e05",
+        "rgb": [78.4, 29.8, 4.7]
+    },
+    "BIG_BROWN_TREETOP_CENTER": {
+        "index": 4,
+        "color": "#4e1e05",
+        "rgb": [78.4, 29.8, 4.7]
+    },
+    "BIG_BROWN_TREETOP_1": {
+        "index": 5,
+        "color": "#4e1e05",
+        "rgb": [78.4, 29.8, 4.7]
+    },
+    "GREEN_ROCK": {
+        "index": 7,
+        "color": "#004100",
+        "rgb": [0.0, 65.9, 0.0]
+    },
+    "WHITE_TREE": {
+        "index": 8, 
+        "color": "#636363",
+        "rgb": [98.8, 98.8, 98.8]
+    },
+    "BIG_GREEN_TREETOP_LEFT": {
+        "index": 9, 
+        "color": "#00a800",
+        "rgb": [0.0, 65.9, 0.0] 
+    },
+    "BIG_GREEN_TREETOP_CENTER": {
+        "index": 10, 
+        "color": "#00a800",
+        "rgb": [0.0, 65.9, 0.0] 
+    },
+    "BIG_GREEN_TREETOP_RIGHT": {
+        "index": 11, 
+        "color": "#00a800",
+        "rgb": [0.0, 65.9, 0.0] 
+    },
+    "GRAVEYARD_PATH": {
+        "index": 14,
+        "color": "#747474",
+        "rgb": [46, 46, 46]
+    },
+    "ENTRANCE": {
+        "index": 18, 
+        "color": "#000000",
+        "rgb": [0.0, 0.0, 0.0]
+    },
+    "STAIRS": {
+        "index": 20,
+        "color": "#0d165d",
+        "rgb": [12.5, 22.0, 92.5]
+    },
+    "BROWN_TREE": {
+        "index": 21,
+        "color": "#4e1e05",
+        "rgb": [78.4, 29.8, 4.7]
+    },
+    "BROWN_STATUE": {
+        "index": 22,
+        "color": "#4e1e05",
+        "rgb": [78.4, 29.8, 4.7]
+    },
+    "BIG_BROWN_TREETRUNK_2": {
+        "index": 23,
+        "color": "#4E1E05",
+        "rgb": [78.4, 29.8, 4.7]
+    },
+    "BIG_BROWN_TREETRUNK_1": {
+        "index": 25,
+        "color": "#4e1e05",
+        "rgb": [78.4, 29.8, 4.7]
+    },
+    "GREEN_STAIRS": {
+        "index": 26,
+        "color": "#0d165d",
+        "rgb": [12.5, 22.0, 92.5]
+    },
+    "GREEN_TREE": {
+        "index": 27,
+        "color": "#004100",
+        "rgb": [0.0, 65.0, 0.0]
+    },
+    "GREEN_STATUE": {
+        "index": 28, 
+        "color": "#00a800",
+        "rgb": [0.0, 65.9, 0.0] 
+    },
+    "BIG_GREEN_TREETRUNK_LEFT": {
+        "index": 29, 
+        "color": "#00a800",
+        "rgb": [0.0, 65.9, 0.0] 
+    },
+    "GREEN_STATUE_HEAD": {
+        "index": 30,
+        "color": "#00A800",
+        "rgb": [0, 66, 0]
+    },
+    "BIG_GREEN_TREETRUNK_RIGHT": {
+        "index": 31, 
+        "color": "#00a800",
+        "rgb": [0.0, 65.9, 0.0] 
+    },
+    "WHITE_STAIRS": {
+        "index": 32,
+        "color": "#1e3a5d",
+        "rgb": [30.1, 57.8, 93.4]
+    },
+    "GRAVE": {
+        "index": 33,
+        "color": "#636363",
+        "rgb": [98.8, 98.8, 98.8]
+    },
+    "WHITE_STATUE": {
+        "index": 34,
+        "color": "#FCFCFC",
+        "rgb": [99, 99, 99]
+    },
+    "BROWN_ROCK_WALL_UPPER_LEFT":{
+        "index": 40,
+        "color": "#C84C0C",
+        "rgb": [78, 30, 5]
+    },
+    "BROWN_BARRIER":{
+        "index": 41,
+        "color": "#C84C0C",
+        "rgb": [78, 30, 5]
+    },
+    "BROWN_ROCK_WALL_UPPER_RIGHT":{
+        "index": 42,
+        "color": "#C84C0C",
+        "rgb": [78, 30, 5]
+    },
+    "BROWN_STATUE_UPPER_LEFT":{
+        "index": 43,
+        "color": "#C84C0C",
+        "rgb": [78, 30, 5]
+    },
+    "BROWN_STATUE_CENTER":{
+        "index": 44,
+        "color": "#C84C0C",
+        "rgb": [78, 30, 5]
+    },
+    "BROWN_STATUE_UPPER_RIGHT":{
+        "index": 45,
+        "color": "#C84C0C",
+        "rgb": [78, 30, 5]
+    },
+    "GREEN_ROCK_WALL_UPPER_LEFT": {
+        "index": 46,
+        "color": "#004100",
+        "rgb": [0.0, 65.9, 0.0]
+    },
+    "GREEN_BARRIER": {
+        "index": 47,
+        "color": "#004100",
+        "rgb": [0.0, 65.9, 0.0]
+    },
+    "GREEN_ROCK_WALL_UPPER_RIGHT": {
+        "index": 48,
+        "color": "#004100",
+        "rgb": [0.0, 65.9, 0.0]
+    },
+    "GREEN_STATUE_UPPER_LEFT": {
+        "index": 49,
+        "color": "#00A800",
+        "rgb": [0, 66, 0]
+    },
+    "GREEN_STATUE_CENTER": {
+        "index": 50,
+        "color": "#00A800",
+        "rgb": [0, 66, 0]
+    },
+    "GREEN_STATUE_UPPER_RIGHT": {
+        "index": 51,
+        "color": "#00A800",
+        "rgb": [0, 66, 0]
+    },
+    "WHITE_BARRIER_UPPER_LEFT": {
+        "index": 52,
+        "color": "#063636",
+        "rgb": [98.8, 98.8, 98.8]
+    },
+    "WHITE_BARRIER": {
+        "index": 53,
+        "color": "#063636",
+        "rgb": [98.8, 98.8, 98.8]
+    },
+    "WHITE_BARRIER_UPPER_RIGHT": {
+        "index": 54,
+        "color": "#063636",
+        "rgb": [98.8, 98.8, 98.8]
+    },
+    "WHITE_STATUE_UPPER_LEFT": {
+        "index": 55, 
+        "color": "#636363",
+        "rgb": [98.8, 98.8, 98.8]
+    },
+    "WHITE_STATUE_CENTER": {
+        "index": 56, 
+        "color": "#636363",
+        "rgb": [98.8, 98.8, 98.8]
+    },
+    "WHITE_STATUE_UPPER_RIGHT": {
+        "index": 57, 
+        "color": "#636363",
+        "rgb": [98.8, 98.8, 98.8]
+    },
+    "BROWN_ROCK_WALL_LOWER_LEFT":{
+        "index": 60,
+        "color": "#C84C0C",
+        "rgb": [78, 30, 5]
+    },
+    "BROWN_ROCK_WALL": {
+        "index": 61,
+        "color": "#4e1e05",
+        "rgb": [78.4, 29.8, 4.7]
+    },
+    "BROWN_ROCK_WALL_LOWER_RIGHT":{
+        "index": 62,
+        "color": "#C84C0C",
+        "rgb": [78, 30, 5]
+    },
+    "BROWN_STATUE_LOWER_LEFT":{
+        "index": 63,
+        "color": "#C84C0C",
+        "rgb": [78, 30, 5]
+    },
+    "DESERT": {
+        "index": 64,
+        "color": "#FF9933",
+        "rgb": [255, 153, 51]
+    },
+    "BROWN_STATUE_LOWER_RIGHT":{
+        "index": 65,
+        "color": "#C84C0C",
+        "rgb": [78, 30, 5]
+    },
+    "GREEN_ROCK_WALL_LOWER_LEFT": {
+        "index": 66,
+        "color": "#004100",
+        "rgb": [0.0, 65.9, 0.0]
+    },
+    "GREEN_ROCK_WALL": {
+        "index": 67,
+        "color": "#004100",
+        "rgb": [0.0, 65.9, 0.0]
+    },
+    "GREEN_ROCK_WALL_LOWER_RIGHT": {
+        "index": 68,
+        "color": "#004100",
+        "rgb": [0.0, 65.9, 0.0]
+    },
+    "GREEN_STATUE_LOWER_LEFT": {
+        "index": 69,
+        "color": "#00A800",
+        "rgb": [0, 66, 0]
+    },
+    "WATERFALL_CAVE": {
+        "index": 70,
+        "color": "#2038EC",
+        "rgb": [13, 22, 93]
+    },
+    "GREEN_STATUE_LOWER_RIGHT": {
+        "index": 71,
+        "color": "#00A800",
+        "rgb": [0, 66, 0]
+    },
+    "WHITE_ROCK_WALL_LOWER_LEFT": {
+        "index": 72,
+        "color": "#063636",
+        "rgb": [98.8, 98.8, 98.8]
+    },
+    "WHITE_ROCK_WALL": {
+        "index": 73,
+        "color": "#063636",
+        "rgb": [98.8, 98.8, 98.8]
+    },
+    "WHITE_ROCK_WALL_LOWER_RIGHT": {
+        "index": 74,
+        "color": "#063636",
+        "rgb": [98.8, 98.8, 98.8]
+    },
+    "WHITE_STATUE_LOWER_LEFT": {
+        "index": 75, 
+        "color": "#636363",
+        "rgb": [98.8, 98.8, 98.8]
+    },
+    "WHITE_STATUE_LOWER_RIGHT": {
+        "index": 77, 
+        "color": "#636363",
+        "rgb": [98.8, 98.8, 98.8]
+    },
+    "POND_UPPER_LEFT_CORNER": {
+        "index": 80,
+        "color": "#2038EC",
+        "rgb": [13, 22, 93]
+    },
+    "POND_UPPER_MIDDLE": {
+        "index": 81,
+        "color": "#2038EC",
+        "rgb": [13, 22, 93]
+    },
+    "POND_UPPER_RIGHT_CORNER": {
+        "index": 82,
+        "color": "#2038EC",
+        "rgb": [13, 22, 93]
+    },
+    "FAIRY_POND_UPPER_LEFT_CORNER": {
+        "index": 86,
+        "color": "#2038EC",
+        "rgb": [13, 22, 93]
+    },
+    "FAIRY_POND_UPPER_MIDDLE": {
+        "index": 87,
+        "color": "#2038EC",
+        "rgb": [13, 22, 93]
+    },
+    "FAIRY_POND_UPPER_RIGHT_CORNER": {
+        "index": 88,
+        "color": "#2038EC",
+        "rgb": [13, 22, 93]
+    },
+    "POND_LEFT_MIDDLE": {
+        "index": 100,
+        "color": "#2038EC",
+        "rgb": [13, 22, 93]
+    },
+    "RED_WATER": {
+        "index": 101,
+        "color": "#5938EC",
+        "rgb": [35, 22, 93]
+    },
+    "POND_RIGHT_MIDDLE": {
+        "index": 102,
+        "color": "#2038EC",
+        "rgb": [13, 22, 93]
+    },
+    "FAIRY_POND_LEFT_MIDDLE": {
+        "index": 106,
+        "color": "#2038EC",
+        "rgb": [13, 22, 93]
+    },
+    "GREEN_WATER": {
+        "index": 107,
+        "color": "#2059EC",
+        "rgb": [13, 35, 93]
+    },
+    "FAIRY_POND_RIGHT_MIDDLE": {
+        "index": 108,
+        "color": "#2038EC",
+        "rgb": [13, 22, 93]
+    },
+    "POND_LOWER_LEFT_CORNER": {
+        "index": 120,
+        "color": "#2038EC",
+        "rgb": [13, 22, 93]
+    },
+    "POND_LOWER_MIDDLE": {
+        "index": 121,
+        "color": "#2038EC",
+        "rgb": [13, 22, 93]
+    },
+    "POND_LOWER_RIGHT_CORNER": {
+        "index": 122,
+        "color": "#2038EC",
+        "rgb": [13, 22, 93]
+    },
+    "FAIRY_POND_LOWER_LEFT_CORNER": {
+        "index": 126,
+        "color": "#2038EC",
+        "rgb": [13, 22, 93]
+    },
+    "WATER_SHORE": {
+        "index": 127,
+        "color": "#2038EC",
+        "rgb": [13, 22, 93]
+    },
+    "FAIRY_POND_LOWER_RIGHT_CORNER": {
+        "index": 128,
+        "color": "#2038EC",
+        "rgb": [13, 22, 93]
+    },
+    "WATER_SHORE_CORNER_1":{
+        "index": 140,
+        "color": "#FCD8A8",
+        "rgb": [100, 85, 66]
+    },
+    "WATER_SHORE_CORNER_2":{
+        "index": 141,
+        "color": "#FCD8A8",
+        "rgb": [100, 85, 66]
+    },
+    "WATER_SHORE_CORNER_3":{
+        "index": 142,
+        "color": "#FCD8A8",
+        "rgb": [100, 85, 66]
+    },
+    "WATER_SHORE_CORNER_4":{
+        "index": 143,
+        "color": "#FCD8A8",
+        "rgb": [100, 85, 66]
+    },
+    "WATERFALL": {
+        "index": 144,
+        "color": "#2038EC",
+        "rgb": [13, 22, 93]
+    },
+    "BROWN_BRIDGE": {
+        "index": 145,
+        "color": "#C84C0C",
+        "rgb": [78, 30, 5]
+    },
+    "WATER_SHORE_CORNER_5":{
+        "index": 146,
+        "color": "#FCD8A8",
+        "rgb": [100, 85, 66]
+    },
+    "WATER_SHORE_CORNER_6":{
+        "index": 147,
+        "color": "#FCD8A8",
+        "rgb": [100, 85, 66]
+    },
+    "WHITE_STATUE_HEAD": {
+        "index": 150, 
+        "color": "#636363",
+        "rgb": [98.8, 98.8, 98.8]
+    },
+    "GREEN_DOCK": {
+        "index": 151,
+        "color": "#004100",
+        "rgb": [0.0, 65.9, 0.0]
+    },
+    "BROWN_STATUE_HEAD": {
+        "index": 156,
+        "color": "#C84C0C",
+        "rgb": [78, 30, 5]
+    }
+}

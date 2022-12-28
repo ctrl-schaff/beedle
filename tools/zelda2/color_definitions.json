@@ -1,0 +1,66 @@
+{
+    "TOWN": {
+        "index": 0,
+        "color": "#747474"
+    },
+    "CAVE": {
+        "index": 1, 
+        "color": "#000000"
+    },
+    "PALACE": {
+        "index": 2, 
+        "color": "#efefef"
+    },
+    "BRIDGE": {
+        "index": 3, 
+        "color": "#f0bc3c"
+    },
+    "DESERT": {
+        "index": 4, 
+        "color": "#fabcb0"
+    },
+    "GRASSLAND": {
+        "index": 5, 
+        "color": "#80D010"
+    },
+    "FOREST": {
+        "index": 6, 
+        "color": "#009400"
+    },
+    "SWAMP": {
+        "index": 7, 
+        "color": "#386138"
+    },
+    "GRAVEYARD": {
+        "index": 8, 
+        "color": "#fcfcfc"
+    },
+    "ROAD": {
+        "index": 9, 
+        "color": "#ffbc3c"
+    },
+    "VOLCANIC": {
+        "index": 10, 
+        "color": "#c84c0c"
+    },
+    "MOUNTAIN": {
+        "index": 11, 
+        "color": "#634536"
+    },
+    "OCEAN": {
+        "index": 12, 
+        "color": "#3cbcfc"
+    },
+    "WATER": {
+        "index": 13, 
+        "color": "#85d5ff"
+    },
+    "BOULDER": {
+        "index": 14, 
+        "color": "#dc7e4f"
+    },
+    "MONSTER": {
+        "index": 15, 
+        "color": "#ff6def"
+    }
+}
